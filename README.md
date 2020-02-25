@@ -27,7 +27,7 @@ This series of lessons lays the foundation for the remainder of the course conte
 
 - There are a number of variables that may be used within the inventory to control how ansible connects to and interacts with target hosts
 
-Commands to call ansible with `ping` module:
+- Commands to call ansible with `ping` module:
     - ```ansible innaghiyev1c.mylabserver.com -m ping -k``` - call ping module on `innaghiyev1c.mylabserver.com` host. Where `-m ping` is ping module
     and `-k` is key for asking password
     - ```ansible all -m ping -k``` - call all defined hosts in your inventory list `/etc/ansible/hosts/`
