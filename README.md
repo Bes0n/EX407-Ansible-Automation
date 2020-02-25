@@ -4,6 +4,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Understanding Core Components of Ansible](#understanding-core-components-of-ansible)
     - [Understanding Core Components of Ansible Part 1](#understanding-core-components-of-ansible-part-1)
     - [Understanding Core Components of Ansible Part 2](#understanding-core-components-of-ansible-part-2)
+    - [A Brief Tour of the Ansible Configuration File](#a-brief-tour-of-the-ansible-configuration-file)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -105,4 +107,39 @@ innaghiyev1c.mylabserver.com | SUCCESS => {
     - ansible_managed
     - forks
     - Inventory
-    
+
+### A Brief Tour of the Ansible Configuration File
+The Ansible master configuration file is reviewed on a live system in this demonstration. Key configuration values are discussed as well as how to modify those values.
+  
+- Let's see some default values of *ansible.cfg* file located by `/etc/ansible/ansible.cfg` directory
+```
+[defaults]
+
+# some basic default values...
+
+#inventory      = /etc/ansible/hosts
+#library        = /usr/share/my_modules/
+#module_utils   = /usr/share/my_module_utils/
+#remote_tmp     = ~/.ansible/tmp
+#local_tmp      = ~/.ansible/tmp
+#plugin_filters_cfg = /etc/ansible/plugin_filters.yml
+#forks          = 5
+#poll_interval  = 15
+#sudo_user      = root
+#ask_sudo_pass = True
+#ask_pass      = True
+#transport      = smart
+#remote_port    = 22
+#module_lang    = C
+#module_set_locale = False
+```
+  
+- Another handy block is following
+```
+[privilege_escalation]
+#become=True
+#become_method=sudo
+#become_user=root
+#become_ask_pass=False
+```
+
