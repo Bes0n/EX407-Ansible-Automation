@@ -9,6 +9,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
     - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
     - [Demonstration: Ansible Ad-Hoc Commands Part 1](#demonstration-ansible-ad-hoc-commands-part-1)
+    - [Demonstration: Ansible Ad-Hoc Commands Part 2](#demonstration-ansible-ad-hoc-commands-part-2)
 
 
 ## Understanding Core Components of Ansible
@@ -239,12 +240,28 @@ Learn how to use ad-hoc ansible commands for simple system managment. This lectu
 
 
 ### Demonstration: Ansible Ad-Hoc Commands Part 1
-documenation for specific modules can be collected using the ansible-doc command described in https://linuxacademy.com/cp/courses/lesson/course/2035/lesson/1/module/198
   
 - Let's use `yum` as an example of ad-hoc command
     - `ansible myserver.example.com -i inv.ini -m yum -b -a "name=elinks state=latest"` - install **elinks** with **latest** version
         - `-i` - key for inventory host file
         - `-m yum` - use `yum` module 
-        - `-b` - become (by default become **root**)
+        - `-b` - become (by default become **root**). Can be changed in `/etc/ansible/ansible.cfg` file
         - `-a "name=elinks state=latest"` - arguments. For `yum` module we're using **name** and **state**
     - `ansible myserver.example.com -i inv.ini -m yum -b -a "name=elinks state=absent"` - state **absent** will uninstall **elinks**
+
+### Demonstration: Ansible Ad-Hoc Commands Part 2
+
+- Let's work with a **file** module
+    - `ansible myserver.example.com -i inv.ini -m file -a "name=/home/user/newfile state=touch"`
+        - `-m file` - using **file** module
+        - `-a "name=/home/user/newfile state=touch"` - arguments **name** - for declaring path of file and **state** what to do with it. 
+    - `ansible myserver.example.com -i inv.ini -m file -a "name=/home/user/newfile"` - get **properties** of the file
+    - `ansible myserver.example.com -i inv.ini -m file -a "name=/home/user/newfile mode=0400"` - set a **mode** of the file to **0400**
+    - `ansible myserver.example.com -i inv.ini -m file -b -a "name=/home/user/newfile owner=root"` - we are changing file owner to **root** and using `-b`
+    key for become. 
+    - `ansible myserver.example.com -i inv.ini -m user -b -a "name=sam"` - create user **sam**
+        - `-m user` - using **user** module
+        - `-a "name=sam"` - as argument we indicate user name  
+    - `ansible myserver.example.com -i inv.ini -m user -b -a "name=sam append=yes groups=wheel"` - add user to a **wheel** group.
+        - `append=yes` - for appending group, otherwise it will wipe out previous groups
+        - `groups=wheel` - define which group needs to be added
