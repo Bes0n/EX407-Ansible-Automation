@@ -8,6 +8,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [LAB Getting Started with Ansible](#lab-getting-started-with-ansible)
 - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
     - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
+    - [Demonstration: Ansible Ad-Hoc Commands Part 1](#demonstration-ansible-ad-hoc-commands-part-1)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -234,3 +236,15 @@ Learn how to use ad-hoc ansible commands for simple system managment. This lectu
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img4.png)
 
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img5.png)
+
+
+### Demonstration: Ansible Ad-Hoc Commands Part 1
+documenation for specific modules can be collected using the ansible-doc command described in https://linuxacademy.com/cp/courses/lesson/course/2035/lesson/1/module/198
+  
+- Let's use `yum` as an example of ad-hoc command
+    - `ansible myserver.example.com -i inv.ini -m yum -b -a "name=elinks state=latest"` - install **elinks** with **latest** version
+        - `-i` - key for inventory host file
+        - `-m yum` - use `yum` module 
+        - `-b` - become (by default become **root**)
+        - `-a "name=elinks state=latest"` - arguments. For `yum` module we're using **name** and **state**
+    - `ansible myserver.example.com -i inv.ini -m yum -b -a "name=elinks state=absent"` - state **absent** will uninstall **elinks**
