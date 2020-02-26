@@ -6,6 +6,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Understanding Core Components of Ansible Part 2](#understanding-core-components-of-ansible-part-2)
     - [A Brief Tour of the Ansible Configuration File](#a-brief-tour-of-the-ansible-configuration-file)
     - [LAB Getting Started with Ansible](#lab-getting-started-with-ansible)
+- [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
+    - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -190,3 +192,45 @@ ansible    ALL=(ALL)       NOPASSWD: ALL
   - `ansible -i /home/ansible/inventory node2 -m ping`
 - To redirect output of a successful command to `/home/ansible/output`:
   - `ansible -i /home/ansible/inventory node1 -m ping > /home/ansible/output`
+
+
+## Run Ad-Hoc Ansible Commands
+### Run Ad-Hoc Ansible Commands
+Learn how to use ad-hoc ansible commands for simple system managment. This lecture covers one of the key objectives for Red Hat exam 407.
+
+- Overview:
+    - What is an ad-hoc command in Ansible? 
+    - Use cases for ad-hoc commands
+    - Ad-hoc vs Playbook
+    - Ansible command syntax
+    - Common modules
+
+- What is an ad-hoc command in Ansible
+    - You can run ansible either ad-hoc or as a playbook
+    - Both methods have the same capabilities
+    - Ad-hoc commands are effectively one-liners
+
+- Use cases for Ad-hoc
+    - Operational commands
+        - Checking log contents
+        - Daemon control
+        - Process management
+    - Informational commands
+        - Check installed software
+        - Check system properties
+        - Gather system performance information
+    - Research
+        - Work with unfamiliar modules on test systems
+        - Practice for playbook engineering
+
+##### Ad-hoc vs Playbook
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img2.png)
+  
+##### Common Modules
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img3.png)
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img4.png)
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img5.png)
