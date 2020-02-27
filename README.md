@@ -149,6 +149,23 @@ The Ansible master configuration file is reviewed on a live system in this demon
 ```
 
 ### LAB Getting Started with Ansible
+The very first step to harnessing the power of Ansible is configuring your environment. This activity goes over installing Ansible on a control node and configuring two managed servers for use with Ansible. We will also create a simple inventory and run an Ansible command to verify our configuration is correct.
+  
+##### Additional Information and Resources
+Your CIO has greenlit a proof of concept for Ansible in your environment. You are to set up an Ansible control node in a test environment and verify basic functionality. You have three demo hosts, one to be the control node (`control1`), and two to serve as managed nodes (`node1` and `node2`). You must complete the following steps:
+  
+- Install Ansible on the `control` node.
+- Configure the `ansible` user on the control node for ssh shared key access to managed nodes.
+  Note: do not use a passphrase for the key pair.
+- Create a simple Ansible inventory on the control node in `/home/ansible/inventory` containing node1 and node2.
+- Configure sudo access for Ansible on `node1` and `node2` so that Ansible may use `sudo` for any command with no password prompt.
+- Verify each managed node can be accessed by Ansible from the control node using the `ping` module. Redirect the output of a successful command to `/home/ansible/output`.
+  
+Important Notes:
+- The user `ansible` is already present on all servers for your convenience.
+- The `ansible` user has the same password as the `cloud_user`.
+- `/etc/hosts` entries are present on `control1` for the managed nodes.
+
 ##### Install Ansible on the control node.
 - To install Ansible on the control node, run  ansible.
 ```
