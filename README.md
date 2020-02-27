@@ -13,7 +13,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [LAB Ad-Hoc Ansible Commands](#lab-ad-hoc-ansible-commands)
 - [Inventory Management](#inventory-management)
     - [Inventory Essentials and Inventory Variables](#inventory-essentials-and-inventory-variables)
-
+    - [Demo: Variables and Inventories](#demo-variables-and-inventories)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -357,3 +357,6 @@ In Ansible, inventories are crucially important as they serve as the foundation 
   
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img8.png)
   
+### Demo: Variables and Inventories
+Being able to work with inventories and variables is an essential skill for any user of Ansible. This command line demonstration will show students the best practices for using variables within inventories.
+
