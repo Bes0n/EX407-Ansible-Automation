@@ -11,6 +11,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demonstration: Ansible Ad-Hoc Commands Part 1](#demonstration-ansible-ad-hoc-commands-part-1)
     - [Demonstration: Ansible Ad-Hoc Commands Part 2](#demonstration-ansible-ad-hoc-commands-part-2)
     - [LAB Ad-Hoc Ansible Commands](#lab-ad-hoc-ansible-commands)
+- [Inventory Management](#inventory-management)
+    - [Inventory Essentials and Inventory Variables](#inventory-essentials-and-inventory-variables)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -315,3 +318,42 @@ Important notes:
 
 ##### Ensure `auditd` Is Enabled and Running on All Hosts
 - `ansible all -b -m service -a "name=auditd state=started enabled=yes"`
+  
+
+## Inventory Management
+### Inventory Essentials and Inventory Variables
+In Ansible, inventories are crucially important as they serve as the foundation for ansible automation. This lecture extends on the basic inventory concpets already covered such as file format and location.  Students will be introduced to the concept of static and dynamic inventories and learn about how inventories and variables work together. 
+  
+##### Overview
+- Use both static and dynamic inventories to define groups of hosts:
+    - What is the inventory
+    - File formats
+    - Statis vs. Dynamic
+    - Variables and inventories
+- Utilize an existing dynamic inventory script:
+    - On dynamic inventories
+    - Some popular options
+  
+##### What is an Inventory
+- An inventory is a list of hosts that Ansible manages
+- Inventory location may be specified as follows:
+    - Default: /etc/ansible/hosts
+    - Specified by CLI: ansible -i <filename>
+    - Can be set in ansible.cfg
+- The inventory file may contain hosts, patterns, groups, and variables
+- You may specofy the inventory as a directory containing a series of inventory files (both static and dynamic)
+- The inventory may be specified in YAML or INI format
+- Can be static or dynamic
+
+##### File Formats 
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img6.png)
+  
+##### Static vs. Dynamic
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img7.png)
+  
+##### Variables and Inventories
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img8.png)
+  
