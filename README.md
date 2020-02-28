@@ -407,15 +407,15 @@ This is how YAML inventory file looks like:
 ```
 all:
   hosts:
-    innaghiyev1c.mylabserver.com
+    innaghiyev1c.mylabserver.com:
   children:
-    httpd:
+    production:
       hosts:
-        innaghiyev1c.mylabserver.com
-        innaghiyev3c.mylabserver.com
+        innaghiyev1c.mylabserver.com:
+        innaghiyev3c.mylabserver.com:
     labservers:
       hosts:
-        innaghiyev[1:3]c.mylabserver.com
+        innaghiyev[1:3]c.mylabserver.com:
 ```
 
 ### Dynamic Inventories
