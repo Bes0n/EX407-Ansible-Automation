@@ -14,7 +14,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Inventory Management](#inventory-management)
     - [Inventory Essentials and Inventory Variables](#inventory-essentials-and-inventory-variables)
     - [Demo: Variables and Inventories](#demo-variables-and-inventories)
-
+    - [Demo: Using YAML in Inventories](#demo-using-yaml-in-inventories)
+  
+  
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -359,4 +361,43 @@ In Ansible, inventories are crucially important as they serve as the foundation 
   
 ### Demo: Variables and Inventories
 Being able to work with inventories and variables is an essential skill for any user of Ansible. This command line demonstration will show students the best practices for using variables within inventories.
+  
+Inside of **inventory** directory we have following structure: 
+```
+[cloud_user@innaghiyev2c inventory]$ ls -l
+total 4
+drwxrwxr-x. 2 cloud_user cloud_user  23 Feb 28 05:18 group_vars
+drwxrwxr-x. 2 cloud_user cloud_user  25 Feb 27 10:53 host_vars
+-rw-rw-r--. 1 cloud_user cloud_user 127 Feb 27 10:41 inventory
+```
+  
+Where:
+- `inventory` - stores our hosts
+```
+[cloud_user@innaghiyev2c inventory]$ cat inventory
+innaghiyev1c ansible_host=innaghiyev1c.mylabserver.com
 
+[labservers]
+innaghiyev3c.mylabserver.com
+innaghiyev1c.mylabserver.com
+```
+  
+- `group_vars` - contains group name of our hosts' group. `labservers` - name of group, which contains variables
+```
+[cloud_user@innaghiyev2c inventory]$ ls -l group_vars/
+total 4
+-rw-rw-r--. 1 cloud_user cloud_user 50 Feb 28 05:18 labservers
+[cloud_user@innaghiyev2c inventory]$ cat group_vars/labservers
+logs : /var/log/messages
+secure : /var/log/secure
+```
+  
+- `host_vars` - contains hostname with stored variable inside. `innaghiyev1c` - name of the host, which contains variables
+```
+[cloud_user@innaghiyev2c inventory]$ ls host_vars/
+innaghiyev1c
+[cloud_user@innaghiyev2c inventory]$ cat host_vars/innaghiyev1c
+opt_dir : /opt
+```
+  
+### Demo: Using YAML in Inventories
