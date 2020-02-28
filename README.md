@@ -15,7 +15,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Inventory Essentials and Inventory Variables](#inventory-essentials-and-inventory-variables)
     - [Demo: Variables and Inventories](#demo-variables-and-inventories)
     - [Demo: Using YAML in Inventories](#demo-using-yaml-in-inventories)
-  
+    - [Dynamic Inventories](#dynamic-inventories)
   
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -401,3 +401,28 @@ opt_dir : /opt
 ```
   
 ### Demo: Using YAML in Inventories
+Inventories may be specified in INI or YAML format. This demonstration goes over how to use YAML to create an inventory. Students will benefit from a refresher on YAML syntax as well as review key details on Ansible inventories.
+  
+This is how YAML inventory file looks like:
+```
+all:
+  hosts:
+    innaghiyev1c.mylabserver.com
+  children:
+    httpd:
+      hosts:
+        innaghiyev1c.mylabserver.com
+        innaghiyev3c.mylabserver.com
+    labservers:
+      hosts:
+        innaghiyev[1:3]c.mylabserver.com
+```
+
+### Dynamic Inventories
+Being able to use dynamic inventories in essential skill for any Ansible specialist. This lecture goes over the details of how dynamic inventories in Ansible work.
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img9.png)
+  
+Some Popular Options:
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img10.png)
