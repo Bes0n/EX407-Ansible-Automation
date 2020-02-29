@@ -16,6 +16,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Variables and Inventories](#demo-variables-and-inventories)
     - [Demo: Using YAML in Inventories](#demo-using-yaml-in-inventories)
     - [Dynamic Inventories](#dynamic-inventories)
+    - [Demo: Dynamic Inventories](#demo-dynamic-inventories)
+    - [LAB Working with Ansible Inventories](#lab-working-with-ansible-inventories)
   
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -426,3 +428,58 @@ Being able to use dynamic inventories in essential skill for any Ansible special
 Some Popular Options:
 
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img10.png)
+
+### Demo: Dynamic Inventories
+- `chmod +x script.py` - script for dynamic inventory must be executable. Output of your script must be in **JSON** format
+- `ansible all -i script.py -m ping` - usage of dynamic inventory is the same as a static one
+
+
+### LAB Working with Ansible Inventories
+##### Additional Information and Resources
+Your company has decided the backup software license is frivolous and unnecessary. As a consequence, the license was not renewed. Your supervisor has created a simple script and an Ansible playbook to create an archive of select files, depending on pre-defined Ansible host groups, as a stop-gap measure. You will create the inventory file to complete the backup strategy.
+  
+You must do the following:
+- Create the inventory file in **/home/ansible/inventory**.
+- Configure the host group **media** to contain media1 and media2.
+- Define the following variables for **media** with their accompanying values:
+  - **media_content** should be set to `/var/media/content/`.
+  - **media_index** should be set to `/opt/media/mediaIndex`.
+- Configure the host group **webservers** to contain the hosts web1 and web2.
+- Define the following variables for `webservers` with their accompanying values:
+  - **httpd_webroot** should be set to `/var/www/`
+  - **httpd_config** should be set to `/etc/httpd/`
+- Define the variable **script_files** specifically for web1. The value of **script_files** should be set to `/usr/local/scripts`.
+- You can run `/home/ansible/scripts/backup.sh` to test your inventory. If you have correctly configured the inventory, it should not error.
+- Do not edit anything in **/home/ansible/scripts/**.
+  
+Important notes:
+- For your convenience, Ansible has been installed on the control node.
+- The user `ansible` has already been created on all servers with appropriate shared keys for access to managed servers from the control node.
+- The `ansible` user has the same password as `cloud_user`.
+- `/etc/hosts` entries have been made on control1 for the managed servers.
+- Do not edit anything in `/home/ansible/scripts/`.
+
+##### Learning Objectives
+##### Create the `inventory` File in `/home/ansible/`
+- `touch /home/ansible/inventory`
+##### Configure the Host Group `media` to Contain `media1` and `media2`
+- `echo "[media]" >> /home/ansible/inventory`
+- `echo "media1" >> /home/ansible/inventory`
+- `echo "media2" >> /home/ansible/inventory`
+##### Define Variables for `media` with Their Accompanying Values
+- `mkdir /home/ansible/group_vars`
+- `touch /home/ansible/group_vars/media`
+- `echo "media_content: /var/media/content/" >> /home/ansible/group_vars/media`
+- `echo "media_index: /opt/media/mediaIndex" >> /home/ansible/group_vars/media`
+##### Configure the Host Group `webservers` to Contain the Hosts `web1` and `web2`
+- `echo "[webservers]" >> /home/ansible/inventory`
+- `echo "web1" >> /home/ansible/inventory`
+- `echo "web2" >> /home/ansible/inventory`
+##### Define Variables for `webservers` with Their Accompanying Values
+- `touch /home/ansible/group_vars/webservers`
+- `echo "httpd_webroot: /var/www/" >> /home/ansible/group_vars/webservers`
+- `echo "httpd_config: /etc/httpd/" >> /home/ansible/group_vars/webservers`
+##### Define the Variable `script_files` Specifically for `web1`, Setting Its Value to `/usr/local/scripts`
+- `mkdir /home/ansible/host_vars`
+- `touch /home/ansible/host_vars/web1`
+- `echo "script_files: /usr/local/scripts" >> /home/ansible/host_vars/web1`
