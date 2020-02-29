@@ -293,7 +293,7 @@ Learn how to use ad-hoc ansible commands for simple system managment. This lectu
 ### LAB Ad-Hoc Ansible Commands
 One of the keys to success with Ansible is being able to run `ad-hoc` commands. The value of `ad-hoc` commands is underscored by the fact that it is an objective of the Red Hat Certified Ansible Specialist exam. This exercise guides students through crafting many `ad-hoc` commands which will not only build experience with the concept but also broaden the students' exposure to various Ansible command modules.
 
-##### Additional Information and Resources
+#### Additional Information and Resources
 Some consultants have been employed to perform audits on a number of systems in your company's environment. You must create the user accounts noted in `/home/ansible/userlist.txt` and set up the provided public keys for their accounts. The security team has built a jump host for the consultants to access production systems and provided the full key-pair to you so you may set up and test the connection. All hosts in `dbsystems` will need the provided public key installed so the consultants may use key-pair authentication to access the systems. Also, you must ensure the `auditd` service is enabled and running on all systems.
   
 To summarize, you must do the following:
@@ -309,7 +309,7 @@ Important notes:
 - The default Ansible inventory has been configured for you with the appropriate hosts and groups.
 - `/etc/hosts` entries are present on `control1` for the managed servers.
   
-
+#### Learning Objectives
 ##### Create the User Accounts Noted in `/home/ansible/userlist.txt`
 - `ansible dbsystems -b -m user -a "name=consultant"`
 - `ansible dbsystems -b -m user -a "name=supervisor"`
@@ -435,7 +435,7 @@ Some Popular Options:
 
 
 ### LAB Working with Ansible Inventories
-##### Additional Information and Resources
+#### Additional Information and Resources
 Your company has decided the backup software license is frivolous and unnecessary. As a consequence, the license was not renewed. Your supervisor has created a simple script and an Ansible playbook to create an archive of select files, depending on pre-defined Ansible host groups, as a stop-gap measure. You will create the inventory file to complete the backup strategy.
   
 You must do the following:
@@ -459,7 +459,7 @@ Important notes:
 - `/etc/hosts` entries have been made on control1 for the managed servers.
 - Do not edit anything in `/home/ansible/scripts/`.
 
-##### Learning Objectives
+#### Learning Objectives
 ##### Create the `inventory` File in `/home/ansible/`
 - `touch /home/ansible/inventory`
 ##### Configure the Host Group `media` to Contain `media1` and `media2`
