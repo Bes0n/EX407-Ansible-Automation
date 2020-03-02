@@ -21,8 +21,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Create Ansible Plays and Playbooks](#create-ansible-plays-and-playbooks)
     - [Introduction to Playbooks and Common Modules](#introduction-to-playbooks-and-common-modules)
     - [Create Playbooks to Configure Systems to a Specified State](#create-playbooks-to-configure-systems-to-a-specified-state)
-    
-      
+
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -516,3 +516,5 @@ This less provides an overview of the section and reviews some of the common mod
 - https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
 
 ### Create Playbooks to Configure Systems to a Specified State
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img11.png)
