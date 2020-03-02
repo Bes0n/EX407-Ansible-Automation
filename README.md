@@ -21,7 +21,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Create Ansible Plays and Playbooks](#create-ansible-plays-and-playbooks)
     - [Introduction to Playbooks and Common Modules](#introduction-to-playbooks-and-common-modules)
     - [Create Playbooks to Configure Systems to a Specified State](#create-playbooks-to-configure-systems-to-a-specified-state)
-
+    - [Basic Playbook Syntax Demonstration](#basic-playbook-syntax-demonstration)
+  
+  
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -518,3 +520,32 @@ This less provides an overview of the section and reviews some of the common mod
 ### Create Playbooks to Configure Systems to a Specified State
   
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img11.png)
+
+### Basic Playbook Syntax Demonstration
+Let's write some simple playbook. 
+```
+--- #to mention that this is a cookbook
+- hosts: labservers #define hosts group
+  become: yes #become means sudo, by default is root user 
+  tasks: #what to do on defined hosts
+    - name: install apache #task name, can be anything
+      yum: #what module to call
+        name: httpd #package name
+        state: latest #state of that package, version, absent etc.
+    - name: start and enable httpd #task name
+      service: #module name
+        name: httpd #service name
+        state: started #what is desired state of that service 
+        enabled: yes #enable service, equal to systemctl enable httpd
+    - name: create index.html #name of task 
+      file: #module name 
+        path: /var/www/html/index.html #path of file to change
+        state: touch #what to do with that file, in our case - touch
+    - name: add a linex to index.html #task name
+      lineinfile: #module name
+        path: /var/www/html/index.html #path to the file
+        line: "Hello World" #check line, if not exist add it
+```
+  
+- `ansible-playbook playbook.yml` - instead of **ansible** - ad-hoc run, we're running **ansible-playbook** to execute playbook file.
+- `ansible-playbook playbook.yml --limit innaghiyev1c.mylabserver.com` - set limits on playbook run and execute it only on limited host. 
