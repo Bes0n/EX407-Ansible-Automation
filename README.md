@@ -18,7 +18,11 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Dynamic Inventories](#dynamic-inventories)
     - [Demo: Dynamic Inventories](#demo-dynamic-inventories)
     - [LAB Working with Ansible Inventories](#lab-working-with-ansible-inventories)
-  
+- [Create Ansible Plays and Playbooks](#create-ansible-plays-and-playbooks)
+    - [Introduction to Playbooks and Common Modules](#introduction-to-playbooks-and-common-modules)
+    - [Create Playbooks to Configure Systems to a Specified State](#create-playbooks-to-configure-systems-to-a-specified-state)
+    
+      
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -483,3 +487,32 @@ Important notes:
 - `mkdir /home/ansible/host_vars`
 - `touch /home/ansible/host_vars/web1`
 - `echo "script_files: /usr/local/scripts" >> /home/ansible/host_vars/web1`
+  
+  
+## Create Ansible Plays and Playbooks
+### Introduction to Playbooks and Common Modules
+This less provides an overview of the section and reviews some of the common modules that will continue showing up as the playbook discussion occurs.
+  
+#### Overview:
+- Know how to work with commonly used Ansible modules
+- Create playbooks to configure systems to a specified state
+- Use variables to retrieve the results of running commands
+- Use conditionals to control play execution
+- Configure error handling 
+- Selectively run specified tasks in playbooks using tags
+
+#### Know how to work with Commonly Used Ansible Modules
+- Core modules to be familiar with:
+  - Working with files: copy, archive, unarchive, get_url
+  - user, group
+  - ping
+  - service
+  - yum
+- Lineinfile module
+- htpasswd
+- Shell and command modules
+- Script module
+- Debug module
+- https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
+
+### Create Playbooks to Configure Systems to a Specified State
