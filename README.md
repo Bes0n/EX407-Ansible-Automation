@@ -24,7 +24,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Basic Playbook Syntax Demonstration](#basic-playbook-syntax-demonstration)
     - [Use Variables to Retrieve the Results of Running Commands](#use-variables-to-retrieve-the-results-of-running-commands)
     - [Use Conditionals to Control Play Execution Part 1](#use-conditionals-to-control-play-execution-part-1)
-
+    - [Use Conditionals to Control Play Execution Part 2](#use-conditionals-to-control-play-execution-part-2)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -574,7 +574,7 @@ Let's write some simple playbook.
 ```
 - As an output we will have following result
 ```
-    "msg": "Register output is {u'group': u'cloud_user', u'uid': 1004, u'dest': u'/tmp/newfile', u'changed': True, 'failed': False, u'state': u'file', u'gid': 1005, u'secontext': u'unconfined_u:object_r:user_tmp_t:s0', u'mode': u'0664', u'owner': u'cloud_user', u'diff': {u'after': {u'path': u'/tmp/newfile', u'state': u'touch', u'atime': 1583240962.247869, u'mtime': 1583240962.247869}, u'before': {u'path': u'/tmp/newfile', u'state': u'file', u'atime': 1583240712.9548037, u'mtime': 1583240712.9548037}}, u'size': 5}"
+    "msg": "Register output is {u'group': u'cloud_user', u'uid': 1004, u'dest': u'/tmp/newfile', u'changed': True, 'failed': False, u'state': u'file',  u'gid': 1005, u'secontext': u'unconfined_u:object_r:user_tmp_t:s0', u'mode': u'0664', u'owner': u'cloud_user', u'diff': {u'after': {u'path': u'/tmp/ newfile', u'state': u'touch', u'atime': 1583240962.247869, u'mtime': 1583240962.247869}, u'before': {u'path': u'/tmp/newfile', u'state': u'file',  u'atime': 1583240712.9548037, u'mtime': 1583240712.9548037}}, u'size': 5}"
 }
 ``` 
 - By `register` we're registering output in defined variable. In our case this is **output** variable. We can use this variable during playbook run. 
@@ -582,7 +582,9 @@ Let's write some simple playbook.
 ###  Use Conditionals to Control Play Execution Part 1
   
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img13.png)
-
+  
+Playbook with handler:
+  
 ```
 ---
 - hosts: labservers
@@ -606,3 +608,42 @@ Explanation for playbook:
 - once notify message appeared it's going to trigger handler in the end of play
 - handler is not going to run again if there is no change made. 
 - doesn't matter if we run playbook several times, handler will not be triggered (what is useful, to avoid downtime of the service)
+
+### Use Conditionals to Control Play Execution Part 2
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img14.png)
+
+- **When** - if condition is true, it will execute. More similar to **if-else** condition 
+- **With_items** - will take each item in a list and loop through it
+- **With_files** - really similar to **With_items**
+  
+Demonstration of how to use a **loop** in playbooks:
+```
+---
+- hosts: labservers
+  become: yes
+  tasks:
+    - name: create users
+      user:
+        name: "{{item}}"
+      with_items:
+        - sam
+        - john
+        - bob
+```
+- Following playbook is going to run through `items` and create users **sam** **john** and **bob** listed in `with_items` block
+  
+Demonstration of how to use **when** condition in playbooks:
+```
+---
+- hosts: labservers
+  become: yes
+  tasks:
+    - name: edit index
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "I'm back!!!"
+      when:
+        - ansible_hostname == "innaghiyev1c"
+```
+- Condition is going to wait for proper hostname and apply your changes only on that node.   

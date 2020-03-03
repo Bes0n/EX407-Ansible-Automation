@@ -1,0 +1,11 @@
+---
+- hosts: labservers
+  become: yes
+  tasks:
+    - name: create users
+      user:
+        name: "{{item}}"
+      with_items:
+        - sam
+        - john
+        - bob
