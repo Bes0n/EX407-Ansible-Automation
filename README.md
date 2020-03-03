@@ -25,6 +25,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Use Variables to Retrieve the Results of Running Commands](#use-variables-to-retrieve-the-results-of-running-commands)
     - [Use Conditionals to Control Play Execution Part 1](#use-conditionals-to-control-play-execution-part-1)
     - [Use Conditionals to Control Play Execution Part 2](#use-conditionals-to-control-play-execution-part-2)
+    - [Configure Error Handling](#configure-error-handling)
+    - [Demo: Error Handling – Ignore Errors](#demo-error-handling-ignore-errors)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -647,3 +649,31 @@ Demonstration of how to use **when** condition in playbooks:
         - ansible_hostname == "innaghiyev1c"
 ```
 - Condition is going to wait for proper hostname and apply your changes only on that node.   
+
+### Configure Error Handling
+- **Ignoring acceptable errors** - you're familiar with error and you accept it, you can configure to ignore such errors
+- **Defining failure conditions** - define what to do with errors. Stop run or proceed with execute
+- **Defining "Changed"** - control what it means that something needs to be changed
+- **Blocks** - if some of task inside of block fails it will to another block. That logic  pre-configured already and it's going to switch to another block.
+
+### Demo: Error Handling – Ignore Errors
+Demonstration of playbook:
+```
+---
+- hosts: labservers
+  tasks:
+    - name: get files
+      get_url:
+        url: "http://{{item}}/index.html"
+        dest: "/tmp/{{item}}"
+      ignore_errors: yes
+      with_items:
+        - innaghiyev1c
+        - innaghiyev3c
+        - innaghiyev2c
+```
+
+- We're going to `ignore errors` and even if playbook failed it's going to execute
+- Output will look like this:
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img15.png)
