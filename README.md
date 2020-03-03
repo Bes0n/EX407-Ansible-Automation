@@ -22,8 +22,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Introduction to Playbooks and Common Modules](#introduction-to-playbooks-and-common-modules)
     - [Create Playbooks to Configure Systems to a Specified State](#create-playbooks-to-configure-systems-to-a-specified-state)
     - [Basic Playbook Syntax Demonstration](#basic-playbook-syntax-demonstration)
-  
-  
+    - [Use Variables to Retrieve the Results of Running Commands](#use-variables-to-retrieve-the-results-of-running-commands)
+    - [Use Conditionals to Control Play Execution Part 1](#use-conditionals-to-control-play-execution-part-1)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -549,3 +550,59 @@ Let's write some simple playbook.
   
 - `ansible-playbook playbook.yml` - instead of **ansible** - ad-hoc run, we're running **ansible-playbook** to execute playbook file.
 - `ansible-playbook playbook.yml --limit innaghiyev1c.mylabserver.com` - set limits on playbook run and execute it only on limited host. 
+
+### Use Variables to Retrieve the Results of Running Commands
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img12.png)
+
+- by `register` we can get a lot of information regarding module. What has been changed, where etc
+- playbook with retriving output as a variable
+```
+---
+- hosts: labservers
+  tasks:
+    - name: create file
+      file:
+        path: /tmp/newfile
+        state: touch
+      register: output
+    - debug: msg="Register output is {{output}}"
+    - name: edit file
+      lineinfile:
+        path: /tmp/newfile
+        line: "{{output.uid}}"
+```
+- As an output we will have following result
+```
+    "msg": "Register output is {u'group': u'cloud_user', u'uid': 1004, u'dest': u'/tmp/newfile', u'changed': True, 'failed': False, u'state': u'file', u'gid': 1005, u'secontext': u'unconfined_u:object_r:user_tmp_t:s0', u'mode': u'0664', u'owner': u'cloud_user', u'diff': {u'after': {u'path': u'/tmp/newfile', u'state': u'touch', u'atime': 1583240962.247869, u'mtime': 1583240962.247869}, u'before': {u'path': u'/tmp/newfile', u'state': u'file', u'atime': 1583240712.9548037, u'mtime': 1583240712.9548037}}, u'size': 5}"
+}
+``` 
+- By `register` we're registering output in defined variable. In our case this is **output** variable. We can use this variable during playbook run. 
+  
+###  Use Conditionals to Control Play Execution Part 1
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img13.png)
+
+```
+---
+- hosts: labservers
+  become: yes
+  handlers:
+    - name: restart apache
+      service: name="httpd" state="restarted"
+      listen: "restart web"
+  tasks:
+    - name: change config
+      replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot.*$'
+        replace: 'DocumentRoot "/opt/www"'
+        backup: yes
+      notify: "restart web"
+```
+  
+Explanation for playbook:
+- handlers waiting for notify message from tasks 
+- once notify message appeared it's going to trigger handler in the end of play
+- handler is not going to run again if there is no change made. 
+- doesn't matter if we run playbook several times, handler will not be triggered (what is useful, to avoid downtime of the service)
