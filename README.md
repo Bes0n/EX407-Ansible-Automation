@@ -5,19 +5,19 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Understanding Core Components of Ansible Part 1](#understanding-core-components-of-ansible-part-1)
     - [Understanding Core Components of Ansible Part 2](#understanding-core-components-of-ansible-part-2)
     - [A Brief Tour of the Ansible Configuration File](#a-brief-tour-of-the-ansible-configuration-file)
-    - [LAB Getting Started with Ansible](#lab-getting-started-with-ansible)
+    - [LAB: Getting Started with Ansible](#lab-getting-started-with-ansible)
 - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
     - [Run Ad-Hoc Ansible Commands](#run-ad-hoc-ansible-commands)
     - [Demonstration: Ansible Ad-Hoc Commands Part 1](#demonstration-ansible-ad-hoc-commands-part-1)
     - [Demonstration: Ansible Ad-Hoc Commands Part 2](#demonstration-ansible-ad-hoc-commands-part-2)
-    - [LAB Ad-Hoc Ansible Commands](#lab-ad-hoc-ansible-commands)
+    - [LAB: Ad-Hoc Ansible Commands](#lab-ad-hoc-ansible-commands)
 - [Inventory Management](#inventory-management)
     - [Inventory Essentials and Inventory Variables](#inventory-essentials-and-inventory-variables)
     - [Demo: Variables and Inventories](#demo-variables-and-inventories)
     - [Demo: Using YAML in Inventories](#demo-using-yaml-in-inventories)
     - [Dynamic Inventories](#dynamic-inventories)
     - [Demo: Dynamic Inventories](#demo-dynamic-inventories)
-    - [LAB Working with Ansible Inventories](#lab-working-with-ansible-inventories)
+    - [LAB: Working with Ansible Inventories](#lab-working-with-ansible-inventories)
 - [Create Ansible Plays and Playbooks](#create-ansible-plays-and-playbooks)
     - [Introduction to Playbooks and Common Modules](#introduction-to-playbooks-and-common-modules)
     - [Create Playbooks to Configure Systems to a Specified State](#create-playbooks-to-configure-systems-to-a-specified-state)
@@ -29,7 +29,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Error Handling – Ignore Errors](#demo-error-handling-ignore-errors)
     - [Demo: Error Handling – Block Groups](#demo-error-handling-block-groups)
     - [Selectively Run Specific Tasks In Playbooks Using Tags](#selectively-run-specific-tasks-in-playbooks-using-tags)
-  
+    - [LAB: Ansible Playbooks: The Basics](#lab-ansible-playbooks-the-basics)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -167,7 +167,7 @@ The Ansible master configuration file is reviewed on a live system in this demon
 #become_ask_pass=False
 ```
 
-### LAB Getting Started with Ansible
+### LAB: Getting Started with Ansible
 The very first step to harnessing the power of Ansible is configuring your environment. This activity goes over installing Ansible on a control node and configuring two managed servers for use with Ansible. We will also create a simple inventory and run an Ansible command to verify our configuration is correct.
   
 ##### Additional Information and Resources
@@ -302,7 +302,7 @@ Learn how to use ad-hoc ansible commands for simple system managment. This lectu
         - `append=yes` - for appending group, otherwise it will wipe out previous groups
         - `groups=wheel` - define which group needs to be added
 
-### LAB Ad-Hoc Ansible Commands
+### LAB: Ad-Hoc Ansible Commands
 One of the keys to success with Ansible is being able to run `ad-hoc` commands. The value of `ad-hoc` commands is underscored by the fact that it is an objective of the Red Hat Certified Ansible Specialist exam. This exercise guides students through crafting many `ad-hoc` commands which will not only build experience with the concept but also broaden the students' exposure to various Ansible command modules.
 
 #### Additional Information and Resources
@@ -446,7 +446,7 @@ Some Popular Options:
 - `ansible all -i script.py -m ping` - usage of dynamic inventory is the same as a static one
 
 
-### LAB Working with Ansible Inventories
+### LAB: Working with Ansible Inventories
 #### Additional Information and Resources
 Your company has decided the backup software license is frivolous and unnecessary. As a consequence, the license was not renewed. Your supervisor has created a simple script and an Ansible playbook to create an archive of select files, depending on pre-defined Ansible host groups, as a stop-gap measure. You will create the inventory file to complete the backup strategy.
   
@@ -735,3 +735,73 @@ How Ansible uses tags
 - `ansible-playbook tags_playbook.yml --tags webdeploy` - running playbook only for `webdeploy` part
 - `ansible-playbook tags_playbook.yml --tags dbdeploy` - running playbook only for `dbdeploy` part
 - `ansible-playbook tahs_playbook.yml --skip-tags webdeploy` - skip tag `webdeploy` and run the rest of playbook
+
+### LAB: Ansible Playbooks: The Basics
+#### Additional Information and Resources
+Your company has been increasing the deployment of small broacher-style websites for clients. The head of IT has decided that each client should have their own web servers for better client isolation and has tasked you with creating concept automation to quickly deploy web-nodes with simple static website content.
+  
+You have been provided an ansible control node and 2 test lab servers (node1 and node2) that have been preconfigured with the ansible user and key.
+  
+You must create an ansible inventory in **/home/ansible/inventory** containing a host group named **web**. The web group should contain node1 and node2.
+  
+Furthermore, you must design an Ansible playbook that will execute the following tasks on your configured inventory: install **httpd**, start and enable the **httpd** service, and install a simple website provided on a repo server. Create the playbook in **/home/ansible/web.yml**. The simple website may be accessed from http://repo.example.com/website.tgz.
+  
+Summary tasks list:
+  
+1. Create an inventory in /home/ansible/inventory containing a host group named web. The web group should contain node1 and node2.
+2. Create a playbook in /home/ansible/web.yml.
+3. Configure the playbook to install httpd on the web group.
+4. Configure the playbook to start and enable the httpd service on the web group.
+5. Configure the playbook to retrieve the website from http://repo.example.com/website.tgz on each server in the web group.
+6. Configure the playbook to unarchive the website into /var/www/html on all servers in the web group.
+7. Execute the playbook you created using the inventory you created to verify your work.
+  
+Important notes:
+- For your convenience, Ansible has been installed on the control node.
+- The user **ansible** is present on all servers with appropriate shared keys for access to managed servers from the control node.
+- The **ansible** user has the same password as **cloud_user**.
+- **/etc/hosts** entries have been made on control1 for the managed servers.
+
+#### Learning Objectives
+**Create an Inventory in `/home/ansible/inventory`. That Contains a Host Group Named `web`. The `web` Group Should Contain `node1` and `node2`**
+- `echo "[web]" >> /home/ansible/inventory`
+- `echo "node1" >> /home/ansible/inventory`
+- `echo "node2" >> /home/ansible/inventory`
+
+**Create a Playbook in `/home/ansible/web.yml`**
+- `echo "---" >> /home/ansible/web.yml`
+
+**Configure the Playbook to Install `httpd` on the `web` Group**
+Using a text editor, such as vim, edit **/home/ansible/web.yml** to contain the following text block below the line containing "---":
+  
+```
+- hosts: web
+  become: yes
+  tasks:
+    - name: install httpd
+      yum: name=httpd state=latest
+```
+
+**Configure the Playbook to Start and Enable the `httpd` Service on the `web` Group**
+Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "install httpd task":
+```
+    - name: start and enable httpd
+      service: name=httpd state=started enabled=yes
+```
+
+**Configure the Playbook to Retrieve the Website from *http://repo.example.com/website.tgz* on Each Server in the `web` Group**
+Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "start and enable httpd" task:
+```
+    - name: retrieve website from repo
+      get_url: url=http://repo.example.com/website.tgz dest=/tmp/website.tgz
+```
+
+**Configure the Playbook to Unarchive the Website into `/var/www/html` on All Servers in the `web` Group**
+Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "retrieve website from repo" task:
+```
+    - name: install website
+      unarchive: remote_src=yes src=/tmp/website.tgz dest=/var/www/html/
+```
+
+**Verify the Work by Executing the Playbook Using the Inventory**
+- `ansible-playbook -i /home/ansible/inventory /home/ansible/web.yml`
