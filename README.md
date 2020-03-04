@@ -31,8 +31,11 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Selectively Run Specific Tasks In Playbooks Using Tags](#selectively-run-specific-tasks-in-playbooks-using-tags)
     - [LAB: Ansible Playbooks: The Basics](#lab-ansible-playbooks-the-basics)
     - [LAB: Ansible Playbooks - Error Handling](#lab-ansible-playbooks---error-handling)
+- [Create and Use Templates to Create Customized Configuration Files](#create-and-use-templates-to-create-customized-configuration-files)
+    - [Using Ansible Templates Lecture](#using-ansible-templates-lecture)
   
   
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -912,3 +915,28 @@ Using a text editor, such as vim, edit `/home/ansible/report.yml` to contain the
 
 ##### Verify Configuration by Running the Playbook
 - `ansible-playbook /home/ansible/report.yml`
+  
+  
+## Create and Use Templates to Create Customized Configuration Files
+### Using Ansible Templates Lecture
+This lecture covers how templates are used, why they are used, and how they are created. A successful Ansible Specialist must have an understanding of these concepts.
+  
+Overview:
+- Template basics
+- Template module 
+- Template file 
+  
+Template basics
+- Template give the ability to provide a skeletal file that can be dynamically completed using variables 
+- The most common template use case is configuration file management
+- Templates are generally used by providing a template file on the ansible control node, and then using the template module within your playbook to deploy the file to a target server or group
+- Templates are processed using the Jinja2 template language
+  
+Template Module
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img17.png)
+  
+Template File
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img18.png)
+  
