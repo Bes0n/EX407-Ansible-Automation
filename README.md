@@ -734,3 +734,4 @@ How Ansible uses tags
 - `ansible-playbook tags_playbook.yml` - running playbook without tags
 - `ansible-playbook tags_playbook.yml --tags webdeploy` - running playbook only for `webdeploy` part
 - `ansible-playbook tags_playbook.yml --tags dbdeploy` - running playbook only for `dbdeploy` part
+- `ansible-playbook tahs_playbook.yml --skip-tags webdeploy` - skip tag `webdeploy` and run the rest of playbook
