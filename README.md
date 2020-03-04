@@ -33,7 +33,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [LAB: Ansible Playbooks - Error Handling](#lab-ansible-playbooks---error-handling)
 - [Create and Use Templates to Create Customized Configuration Files](#create-and-use-templates-to-create-customized-configuration-files)
     - [Using Ansible Templates Lecture](#using-ansible-templates-lecture)
-  
+    - [Demo: Using Ansible Templates](#demo-using-ansible-templates)
   
 
 ## Understanding Core Components of Ansible
@@ -939,4 +939,35 @@ Template Module
 Template File
   
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img18.png)
+
+
   
+### Demo: Using Ansible Templates
+  
+Our template `network.j2` file will look like this:
+```
+My IP address is {{ ansible_default_ipv4.address }}.
+
+{{ ansible_distribution }} is my OS version.
+```
+
+- `ansible_default_ipv4.address` and `ansible_distribution` - are gathered facts during playbook run 
+  
+Cookbook for calling our template will look like this:
+```
+---
+- hosts: labservers
+  tasks:
+  - name: deploy local net file
+    template:
+      src: /home/cloud_user/template/network.j2
+      dest: /home/cloud_user/template/network.txt
+```
+  
+Created file `/home/cloud_user/template/network.txt` after playbook run will be:
+```
+My IP address is 142.21.46.232.
+
+RedHat is my OS version.
+```
+

@@ -1,0 +1,7 @@
+---
+- hosts: labservers
+  tasks:
+  - name: deploy local net file
+    template:
+      src: /home/cloud_user/template/network.j2
+      dest: /home/cloud_user/template/network.txt
