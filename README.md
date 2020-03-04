@@ -535,7 +535,7 @@ This less provides an overview of the section and reviews some of the common mod
 ### Basic Playbook Syntax Demonstration
 Let's write some simple playbook. 
 ```
---- #to mention that this is a cookbook
+--- #to mention that this is a playbook
 - hosts: labservers #define hosts group
   become: yes #become means sudo, by default is root user 
   tasks: #what to do on defined hosts
@@ -711,7 +711,7 @@ Here how rescue block is working:
 
 ### Selectively Run Specific Tasks In Playbooks Using Tags
 How Ansible uses tags
-- You can have several deployments in your cookbook. Like database and application deployment
+- You can have several deployments in your playbook. Like database and application deployment
 - By using tags we can deploy only application stage or only database stage
   
 ```
@@ -953,7 +953,7 @@ My IP address is {{ ansible_default_ipv4.address }}.
 
 - `ansible_default_ipv4.address` and `ansible_distribution` - are gathered facts during playbook run 
   
-Cookbook for calling our template will look like this:
+Playbook for calling our template will look like this:
 ```
 ---
 - hosts: labservers
