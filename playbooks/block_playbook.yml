@@ -1,0 +1,12 @@
+---
+- hosts: labservers
+  tasks:
+    - name: get file
+      block:
+        - get_url:
+            url: "http://innaghiyev2c/index.html"
+            dest: "/tmp/index_file"
+      rescue:
+        - debug: msg="The file doesn't exists!"
+      always:
+        - debug: msg="Play done!"

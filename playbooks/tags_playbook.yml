@@ -1,0 +1,19 @@
+---
+- hosts: web
+  become: yes
+  tasks:
+  - name: deploy app binary
+    copy:
+      src: /home/user/apps/hello
+      dest: /var/www/html/hello
+    tags:
+      - webdeploy
+- hosts: db
+  become: yes
+  tasks:
+  - name: deploy db script
+    copy:
+      src: /home/user/apps/script.sql
+      dest: /opt/deb/scripts/script.sql
+    tags:
+      - dbdeploy

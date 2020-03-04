@@ -27,6 +27,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Use Conditionals to Control Play Execution Part 2](#use-conditionals-to-control-play-execution-part-2)
     - [Configure Error Handling](#configure-error-handling)
     - [Demo: Error Handling – Ignore Errors](#demo-error-handling-ignore-errors)
+    - [Demo: Error Handling – Block Groups](#demo-error-handling-block-groups)
+    - [Selectively Run Specific Tasks In Playbooks Using Tags](#selectively-run-specific-tasks-in-playbooks-using-tags)
+  
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -677,3 +680,57 @@ Demonstration of playbook:
 - Output will look like this:
 
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img15.png)
+
+### Demo: Error Handling – Block Groups
+Block groups and rescues - like a try and catch.
+```
+---
+- hosts: labservers
+  tasks:
+    - name: get file
+      block:
+        - get_url:
+            url: "http://innaghiyev3c/index.html"
+            dest: "/tmp/index_file"
+      rescue:
+        - debug: msg="The file doesn't exists!"
+      always:
+        - debug: msg="Play done!"
+```
+  
+- `rescue` - that part of block will run if playbook run failed
+- `always` - that part of block will run any time. No matter playbook run fails or not. 
+  
+Here how rescue block is working:
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img16.png)
+
+### Selectively Run Specific Tasks In Playbooks Using Tags
+How Ansible uses tags
+- You can have several deployments in your cookbook. Like database and application deployment
+- By using tags we can deploy only application stage or only database stage
+  
+```
+---
+- hosts: web
+  become: yes
+  tasks:
+  - name: deploy app binary
+    copy:
+      src: /home/cloud_user/apps/hello
+      dest: /var/www/html/hello
+    tags:
+      - webdeploy
+- hosts: db
+  become: yes
+  tasks:
+  - name: deploy db script
+    copy:
+      src: /home/cloud_user/apps/script.sql
+      dest: /opt/deb/scripts/script.sql
+    tags:
+      - dbdeploy
+```
+
+- `ansible-playbook tags_playbook.yml` - running playbook without tags
+- `ansible-playbook tags_playbook.yml --tags webdeploy` - running playbook only for `webdeploy` part
+- `ansible-playbook tags_playbook.yml --tags dbdeploy` - running playbook only for `dbdeploy` part
