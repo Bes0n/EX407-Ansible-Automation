@@ -763,15 +763,15 @@ Important notes:
 - **/etc/hosts** entries have been made on control1 for the managed servers.
 
 #### Learning Objectives
-**Create an Inventory in `/home/ansible/inventory`. That Contains a Host Group Named `web`. The `web` Group Should Contain `node1` and `node2`**
+##### Create an Inventory in `/home/ansible/inventory`. That Contains a Host Group Named `web`. The `web` Group Should Contain `node1` and `node2`
 - `echo "[web]" >> /home/ansible/inventory`
 - `echo "node1" >> /home/ansible/inventory`
 - `echo "node2" >> /home/ansible/inventory`
 
-**Create a Playbook in `/home/ansible/web.yml`**
+##### Create a Playbook in `/home/ansible/web.yml`
 - `echo "---" >> /home/ansible/web.yml`
 
-**Configure the Playbook to Install `httpd` on the `web` Group**
+##### Configure the Playbook to Install `httpd` on the `web` Group
   
 Using a text editor, such as vim, edit **/home/ansible/web.yml** to contain the following text block below the line containing "---":
   
@@ -783,7 +783,7 @@ Using a text editor, such as vim, edit **/home/ansible/web.yml** to contain the 
       yum: name=httpd state=latest
 ```
 
-**Configure the Playbook to Start and Enable the `httpd` Service on the `web` Group**
+##### Configure the Playbook to Start and Enable the `httpd` Service on the `web` Group
   
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "install httpd task":
 ```
@@ -791,7 +791,7 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
       service: name=httpd state=started enabled=yes
 ```
 
-**Configure the Playbook to Retrieve the Website from *http://repo.example.com/website.tgz* on Each Server in the `web` Group**
+##### Configure the Playbook to Retrieve the Website from *http://repo.example.com/website.tgz* on Each Server in the `web` Group
   
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "start and enable httpd" task:
 ```
@@ -799,7 +799,7 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
       get_url: url=http://repo.example.com/website.tgz dest=/tmp/website.tgz
 ```
 
-**Configure the Playbook to Unarchive the Website into `/var/www/html` on All Servers in the `web` Group**
+##### Configure the Playbook to Unarchive the Website into `/var/www/html` on All Servers in the `web` Group
   
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "retrieve website from repo" task:
 ```
@@ -807,5 +807,5 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
       unarchive: remote_src=yes src=/tmp/website.tgz dest=/var/www/html/
 ```
 
-**Verify the Work by Executing the Playbook Using the Inventory**
+##### Verify the Work by Executing the Playbook Using the Inventory**
 - `ansible-playbook -i /home/ansible/inventory /home/ansible/web.yml`
