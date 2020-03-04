@@ -772,6 +772,7 @@ Important notes:
 - `echo "---" >> /home/ansible/web.yml`
 
 **Configure the Playbook to Install `httpd` on the `web` Group**
+  
 Using a text editor, such as vim, edit **/home/ansible/web.yml** to contain the following text block below the line containing "---":
   
 ```
@@ -783,6 +784,7 @@ Using a text editor, such as vim, edit **/home/ansible/web.yml** to contain the 
 ```
 
 **Configure the Playbook to Start and Enable the `httpd` Service on the `web` Group**
+  
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "install httpd task":
 ```
     - name: start and enable httpd
@@ -790,6 +792,7 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
 ```
 
 **Configure the Playbook to Retrieve the Website from *http://repo.example.com/website.tgz* on Each Server in the `web` Group**
+  
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "start and enable httpd" task:
 ```
     - name: retrieve website from repo
@@ -797,6 +800,7 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
 ```
 
 **Configure the Playbook to Unarchive the Website into `/var/www/html` on All Servers in the `web` Group**
+  
 Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the following task block after the "retrieve website from repo" task:
 ```
     - name: install website
