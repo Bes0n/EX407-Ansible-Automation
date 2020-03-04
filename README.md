@@ -26,11 +26,11 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Use Conditionals to Control Play Execution Part 1](#use-conditionals-to-control-play-execution-part-1)
     - [Use Conditionals to Control Play Execution Part 2](#use-conditionals-to-control-play-execution-part-2)
     - [Configure Error Handling](#configure-error-handling)
-    - [Demo: Error Handling – Ignore Errors](#demo-error-handling-ignore-errors)
-    - [Demo: Error Handling – Block Groups](#demo-error-handling-block-groups)
+    - [Demo: Error Handling – Ignore Errors](#demo-error-handling---ignore-errors)
+    - [Demo: Error Handling – Block Groups](#demo-error-handling---block-groups)
     - [Selectively Run Specific Tasks In Playbooks Using Tags](#selectively-run-specific-tasks-in-playbooks-using-tags)
     - [LAB: Ansible Playbooks: The Basics](#lab-ansible-playbooks-the-basics)
-    - [LAB: Ansible Playbooks - Error Handling](#lab-ansible-playbooks-error-handling)
+    - [LAB: Ansible Playbooks - Error Handling](#lab-ansible-playbooks---error-handling)
   
   
 ## Understanding Core Components of Ansible
