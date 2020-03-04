@@ -30,7 +30,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Error Handling – Block Groups](#demo-error-handling-block-groups)
     - [Selectively Run Specific Tasks In Playbooks Using Tags](#selectively-run-specific-tasks-in-playbooks-using-tags)
     - [LAB: Ansible Playbooks: The Basics](#lab-ansible-playbooks-the-basics)
-
+    - [LAB: Ansible Playbooks - Error Handling](#lab-ansible-playbooks-error-handling)
+  
+  
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -809,3 +811,104 @@ Using a text editor such as vim, edit **/home/ansible/web.yml** to contain the f
 
 ##### Verify the Work by Executing the Playbook Using the Inventory**
 - `ansible-playbook -i /home/ansible/inventory /home/ansible/web.yml`
+  
+
+### LAB: Ansible Playbooks - Error Handling
+#### Additional Information and Resources
+We have to set up automation to pull down a data file, from a notoriously unreliable third-party system, for integration purposes. Create a playbook that attempts to pull down http://apps.l33t.com/transaction_list to `localhost`. The playbook should gracefully handle the site being down by outputting the message "l33t.com appears to be down. Try again later." to `stdout`. If the task succeeds, the playbook should write "File downloaded." to `stdout`. No matter if the playbook errors or not, it should always output "Attempt completed." to `stdout`.
+  
+If the report is collected, the playbook should write and edit the file to replace all occurrences of `#BLANKLINE` with a line break `\n`.
+  
+Tasks list summary:
+- Create a playbook, `/home/ansible/report.yml`.
+- Configure the playbook to download http://apps.l33t.com/- transaction_list to `/home/ansible/transaction_list` on `localhost` - and output "File downloaded." to `stdout`.
+- Configure the playbook to handle connection failure by outputting - "l33t.com appears to be down. Try again later." to `stdout`.
+- Configure the playbook to output "Attempt Completed" to `stdout`, - whether it was successful or not.
+- Configure the playbook to replace all instances of `#BLANKLINE` with - the line break character `\n`.
+- Run the playbook using the default inventory to verify whether things work or not.
+  
+Important notes:
+- For convenience, Ansible has been installed on the control node.
+- The user `ansible` already exists on all servers, with appropriate shared keys for access to the necessary servers from the control node.
+- The `ansible` user has the same password as `cloud_user`.
+- All necessary Ansible inventories have already been created.
+- **apps.l337.com** is unavailable by default.
+- We may force a state change by running `/home/ansible/scripts/change_l33t.sh`.
+
+#### Learning Objectives
+##### Create a playbook: `/home/ansible/report.yml`
+- `echo "---" >> /home/ansible/report.yml`
+##### Configure the Playbook to Download *http://apps.l33t.com/transaction_list* to `/home/ansible/transaction_list` on `localhost` and Outputs the Message "File downloaded." to `stdout`
+  
+Using a text editor, such as vim, edit `/home/ansible/report.yml` to contain the following text block below the line containing "---":
+```
+- hosts: localhost
+  tasks:
+    - name: download tranaction_list
+      get_url:
+        url: http://apps.l33t.com/transaction_list 
+        dest: /home/ansible/transaction_list
+    - debug: msg="File downloaded"
+```
+
+##### Configure the Playbook to Handle Connection Failure by Outputting "l33t.com appears to be down. Try again later." to `stdout`
+  
+Using a text editor, such as vim, edit the tasks section in `/home/ansible/report.yml` to contain the new lines as shown below. Note that the `get_url` line was changed to include a leading hyphen:
+```
+---
+- hosts: localhost
+  tasks:
+    - name: download transction_list
+      block:
+        - get_url:
+            url: http://apps.l33t.com/transaction_list
+            dest: /home/ansible/transaction_list
+        - debug: msg="File downloaded"
+      rescue:
+        - debug: msg="l33t.com appears to be down.  Try again later."
+```
+
+##### Configure the Playbook to Output "Attempt Completed" to `stdout`, Whether It Was Successful or Not
+Using a text editor, such as vim, edit `/home/ansible/report.yml` to contain the following text block below the line containing "---":
+  
+```
+---
+- hosts: localhost
+  tasks:
+    - name: download transction_list
+      block:
+        - get_url:
+            url: http://apps.l33t.com/transaction_list
+            dest: /home/ansible/transaction_list
+        - debug: msg="File downloaded"
+      rescue:
+        - debug: msg="l33t.com appears to be down.  Try again later."
+      always:
+        - debug: msg="Attempt completed."
+```
+
+##### Configure the Playbook to Replace All Instances of `#BLANKLINE` with the Line Break Character `\n`
+  
+Using a text editor, such as vim, edit `/home/ansible/report.yml` to contain the following text block below the line containing "---":
+```
+---
+- hosts: localhost
+  tasks:
+    - name: download transction_list
+      block:
+        - get_url:
+            url: http://apps.l33t.com/transaction_list
+            dest: /home/ansible/transaction_list
+        - replace: 
+            path: /home/ansible/transaction_list 
+            regexp: "#BLANKLINE"
+            replace: '\n'
+        - debug: msg="File downloaded"
+      rescue:
+        - debug: msg="l33t.com appears to be down.  Try again later."
+      always:
+        - debug: msg="Attempt completed."
+```
+
+##### Verify Configuration by Running the Playbook
+- `ansible-playbook /home/ansible/report.yml`
