@@ -1007,6 +1007,6 @@ Overview:
   
 - Magic Variables and Filters
   
-![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img19.png)
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img20.png)
   
 ### Demo: Ansible Variables - Magic Variables and Jinja Filters
