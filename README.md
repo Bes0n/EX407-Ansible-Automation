@@ -42,7 +42,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Working with Ansible Facts](#demo-working-with-ansible-facts)
   
 
-  
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -1106,3 +1106,51 @@ Facts.d - custome facts
     
   
 ### Demo: Working with Ansible Facts
+- `ansible labservers -m setup | less` - gather facts for labservers host group
+- `ansible labservers -m setup --limit innaghiyev2c.mylabserver.com -a "filter=*ip*"` - gathering facts with used **filter**
+- `ansible labservers -m setup --limit innaghiyev2c.mylabserver.com -a "filter=*dist*"` 
+```
+innaghiyev2c.mylabserver.com | SUCCESS => {
+    "ansible_facts": {
+        "ansible_distribution": "RedHat", 
+        "ansible_distribution_file_parsed": true, 
+        "ansible_distribution_file_path": "/etc/redhat-release", 
+        "ansible_distribution_file_search_string": "Red Hat", 
+        "ansible_distribution_file_variety": "RedHat", 
+        "ansible_distribution_major_version": "7", 
+        "ansible_distribution_release": "Maipo", 
+        "ansible_distribution_version": "7.7", 
+        "discovered_interpreter_python": "/usr/bin/python"
+    }, 
+    "changed": false
+}
+```
+  
+
+Custom facts set up:
+-  `sudo mkdir -p /etc/ansible/facts.d` - create `facts.d` directory
+- `sudo vim /etc/ansible/facts.d/prefs.fact` - create custom fact with `.fact` extension
+```
+[cloud_user@innaghiyev2c playbook]$ sudo cat /etc/ansible/facts.d/prefs.fact
+[location]
+type=physical
+datacenter=Alexandrea
+```
+
+- `ansible labservers --limit innaghiyev2c.mylabserver.com -m setup -a "filter=ansible_local"` - if we call **ansible_local** facts. Output gonna be like that
+```
+innaghiyev2c.mylabserver.com | SUCCESS => {
+    "ansible_facts": {
+        "ansible_local": {
+            "prefs": {
+                "location": {
+                    "datacenter": "Alexandrea", 
+                    "type": "physical"
+                }
+            }
+        }, 
+        "discovered_interpreter_python": "/usr/bin/python"
+    }, 
+    "changed": false
+}
+```
