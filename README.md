@@ -37,7 +37,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Work with Ansible Variables and Facts](#work-with-ansible-variables-and-facts)
     - [Ansible Variables Lecture](#ansible-variables-lecture)
     - [Demo: Ansible Variables - Magic Variables and Jinja Filters](#demo-ansible-variables---magic-variables-and-jinja-filters)  
-
+    - [Demo: Ansible Variables - Variable Files](#demo-ansible-variables---variable-files)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -1036,4 +1036,49 @@ Content of the file after playbook run:
 ```
 [cloud_user@innaghiyev2c playbook]$ cat ../vars/inv.txt 
 innaghiyev1c.mylabserver.com innaghiyev2c.mylabserver.com innaghiyev3c.mylabserver.com
+```
+
+### Demo: Ansible Variables - Variable Files
+  
+Possible ways to define variable files:
+- `var_files` - using it within the playbook to define variables file  
+- `ansible-playbook var_files_playbook.yml -e "@../vars/users.lst"` - using `-e` key to provide variable file path.
+  
+Here how `users.lst` file looks like:
+```
+[cloud_user@innaghiyev2c playbook]$ cat ../vars/users.lst
+staff:
+  - joe
+  - john
+  - bob
+  - sam
+  - mark
+faculty:
+  - matt
+  - alex
+  - frank
+other:
+  - will
+  - jack
+```
+
+Cookbook with variable file usage:
+```
+---
+- hosts: labservers
+  vars:
+    userFile: /home/cloud_user/vars/list
+  tasks:
+  - name: create file #going to create file with defined path
+    file:
+      state: touch
+      path: "{{ userFile }}"
+  - name: list users #add inside of file users name looping through items
+    lineinfile:
+      path: "{{ userFile }}"
+      line: "{{ item }}"
+    with_items:
+      - "{{ staff }}"
+      - "{{ faculty }}"
+      - "{{ other }}"
 ```
