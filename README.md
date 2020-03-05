@@ -38,6 +38,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Ansible Variables Lecture](#ansible-variables-lecture)
     - [Demo: Ansible Variables - Magic Variables and Jinja Filters](#demo-ansible-variables---magic-variables-and-jinja-filters)  
     - [Demo: Ansible Variables - Variable Files](#demo-ansible-variables---variable-files)
+    - [Ansible Facts Lecture](#ansible-facts-lecture)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -1082,3 +1084,16 @@ Cookbook with variable file usage:
       - "{{ faculty }}"
       - "{{ other }}"
 ```
+
+### Ansible Facts Lecture
+What are facts? 
+- Facts are information discovered by Ansible about a target system
+- There are two ways facts are collected:
+  - Using the setup module with an ad-hoc command: `ansible all -m setup`
+  - Facts are gathered by default when a playbook is executed 
+- Fact gathering in playbooks may be disabled using the **gather_facts** attribute
+  
+How to use facts
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img21.png)
+
