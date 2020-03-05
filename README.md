@@ -39,8 +39,10 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Ansible Variables - Magic Variables and Jinja Filters](#demo-ansible-variables---magic-variables-and-jinja-filters)  
     - [Demo: Ansible Variables - Variable Files](#demo-ansible-variables---variable-files)
     - [Ansible Facts Lecture](#ansible-facts-lecture)
+    - [Demo: Working with Ansible Facts](#demo-working-with-ansible-facts)
+  
 
-
+  
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -1096,4 +1098,11 @@ What are facts?
 How to use facts
   
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img21.png)
+  
 
+Facts.d - custome facts
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img22.png)
+    
+  
+### Demo: Working with Ansible Facts
