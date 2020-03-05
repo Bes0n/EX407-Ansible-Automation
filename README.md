@@ -34,7 +34,10 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Create and Use Templates to Create Customized Configuration Files](#create-and-use-templates-to-create-customized-configuration-files)
     - [Using Ansible Templates Lecture](#using-ansible-templates-lecture)
     - [Demo: Using Ansible Templates](#demo-using-ansible-templates)
-  
+- [Work with Ansible Variables and Facts](#work-with-ansible-variables-and-facts)
+    - [Ansible Variables Lecture](#ansible-variables-lecture)
+    - [Demo: Ansible Variables - Magic Variables and Jinja Filters](#demo-ansible-variables---magic-variables-and-jinja-filters)  
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -970,4 +973,40 @@ My IP address is 142.21.46.232.
 
 RedHat is my OS version.
 ```
+  
 
+
+## Work with Ansible Variables and Facts
+### Ansible Variables Lecture
+This lecture broadly covers how to work with Ansible variables. Variable conventions, dictionary variables, magic variables and jinja2 filters are all covered conceptually as well as syntactically.
+    
+Updated Link https://jinja.palletsprojects.com/en/2.10.x/templates/
+  
+Overview:
+  - Ansible variables
+  - Dictionary variables
+  - Magic variables and filters
+  - What are facts?
+  - How to use facts? 
+  - Facts.d - custom facts
+
+- Ansible variables
+  - Review on naming convention and quotes
+  - Some more places to define variables:
+    - vars, vars_files and vars_prompt
+    - Command line: ansible-playbook play.yml -e '{"myVar":"myValue","anotherVar":"anotherValue"}'
+    - Roles, blocks, and inventories
+  - Essential variable use:
+    - -debug: msg="Look! I'm using my variable {{myVar}}!"
+  - A not on quotes:
+    - name: "{{package}}"
+  
+- Dictionary variables
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img19.png)
+  
+- Magic Variables and Filters
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img19.png)
+  
+### Demo: Ansible Variables - Magic Variables and Jinja Filters
