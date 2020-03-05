@@ -998,7 +998,7 @@ Overview:
     - Roles, blocks, and inventories
   - Essential variable use:
     - -debug: msg="Look! I'm using my variable {{myVar}}!"
-  - A not on quotes:
+  - A note on quotes:
     - name: "{{package}}"
   
 - Dictionary variables
@@ -1010,3 +1010,30 @@ Overview:
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img20.png)
   
 ### Demo: Ansible Variables - Magic Variables and Jinja Filters
+  
+Cookbook with variables usage:
+```
+---
+- hosts: labservers
+  vars:
+    inv_file: /home/cloud_user/vars/inv.txt
+  tasks:
+  - name: create file
+    file:
+      path: "{{inv_file}}"
+      state: touch
+  - name: generate inventory
+    lineinfile:
+      path: "{{inv_file}}"
+      line: "{{ groups['labservers']|join(' ') }}"
+```
+
+- `inv_file` - defined variable before task started
+- `groups['labservers']` - magic variable with `labservers` host group in default inventory
+- `|join(' ')` - join our hostnames with space between them.
+  
+Content of the file after playbook run:
+```
+[cloud_user@innaghiyev2c playbook]$ cat ../vars/inv.txt 
+innaghiyev1c.mylabserver.com innaghiyev2c.mylabserver.com innaghiyev3c.mylabserver.com
+```
