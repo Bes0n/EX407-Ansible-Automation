@@ -40,7 +40,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Ansible Variables - Variable Files](#demo-ansible-variables---variable-files)
     - [Ansible Facts Lecture](#ansible-facts-lecture)
     - [Demo: Working with Ansible Facts](#demo-working-with-ansible-facts)
-  
+    - [LAB: Working with Ansible Templates, Variables, and Facts](#lab-working-with-ansible-templates-variables-and-facts)  
 
 
 ## Understanding Core Components of Ansible
@@ -1154,3 +1154,67 @@ innaghiyev2c.mylabserver.com | SUCCESS => {
     "changed": false
 }
 ```
+  
+
+### LAB: Working with Ansible Templates, Variables, and Facts
+#### Additional Information and Resources
+A colleague of yours was the unfortunate victim of a scam email, and their network account was compromised. Shortly after you finished helping them pack up their desk, your boss gave you the assignment to promote system security through deploying a hardened **sudoers** file. You will need to create an Ansible template of the **sudoers** file that meets the following criteria:
+- A file named **/etc/sudoers.d/hardened** to deploy on all ansible inventory servers. WARNING: Do NOT edit the default **sudoers** file, doing so may break your exercise environment. Additionally, always validate any file placed in **/etc/sudoers.d** with `/sbin/visudo -cf <filename>` prior to deployment!!
+- Grant users in the **sysops** group the ability to run all commands as **root** for each local system by IP address. This would be what the entry in your result - file except with the target system's IP: `%sysops 34.124.22.55 = (ALL) ALL`.
+- Define the **host_alias** group **WEBSERVERS** to contain all servers in the **ansible web inventory** group: `Host_Alias WEBSERVERS = <host name>`
+- Define the **host_alias** group **DBSERVERS** to contain all servers in the ansible database inventory group: `Host_Alias DBSERVERS = <host name>`
+- Grant users in the **httpd** group the ability to `sudo su - webuser` on the **WEBSERVERS** hosts: `%httpd WEBSERVERS = /bin/su - webuser`
+- Grant users in the dba group sudo su - dbuser on the DBSERVERS hosts: `%dba DBSERVERS = /bin/su - dbuser`
+- The file must be validated using `/sbin/visudo -cf` before deployment.
+  
+You will need to create an accompanying playbook in `/home/ansible/security.yml` that will deploy this template to all servers in the default inventory.
+  
+Summary tasks list:
+- Create a template **sudoers** file in */home/ansible/hardened.j2 *that produces a file with appropriate output for each host.
+- The deployed file should resemble the following, except with the **IP** and **hostnames** customized appropriately:
+```
+  %sysops 34.124.22.55 = (ALL) ALL
+  Host_Alias WEBSERVERS = server1, server2
+  Host_Alias DBSERVERS = serverA, serverB
+  %httpd WEBSERVERS = /bin/su - webuser
+  %dba DBSERVERS = /bin/su - dbuser
+```
+  
+- Create a playbook in **/home/ansible/security.yml** that uses the template module to deploy the template on all servers in the default ansible inventory after validating the syntax of the generated file.
+  - Note: You may find it easier to have the play output to **/home/ansible/test** and validate manually using `/sbin/visudo -cf <filename>` before using the template module's validate.
+  - IMPORTANT: Do not deploy any file to `/etc/sudoers.d/ `without first validating with visudo! A syntax error in a `sudoers` file will break sudo on the system and require starting the exercise over again!
+  - Note: The video shows the use of join(' ') which is a typo. To support multiple hosts in the sudoers file it should instead be join(', ')
+- Run the playbook and ensure the files deployed correctly.
+
+#### Learning Objectives
+##### Create a Template *sudoers* File in `/home/ansible/hardened.j2` That Produces a File with Appropriate Output for Each Host
+- `touch /home/ansible/hardened.j2`
+  
+##### The Deployed File Should Resemble the Example File Except with the *IP* and *hostnames* Customized Appropriately
+- Edit **hardened.j2** to contain the following text:
+```
+    %sysops {{ ansible_default_ipv4.address }} = (ALL) ALL
+    Host_Alias WEBSERVERS = {{ groups['web']|join(', ') }}
+    Host_Alias DBSERVERS = {{ groups['database']|join(', ') }} 
+    %httpd WEBSERVERS = /bin/su - webuser
+    %dba DBSERVERS = /bin/su - dbuser
+```
+  
+##### Create a Playbook in `/home/ansible/security.yml` That Uses the Template Module to Deploy the Template on All Servers in the Default Ansible Inventory After Validating the Syntax of the Generated File
+- Edit **/home/ansible/security.yml** to contain the following:
+```
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: deploy sudo template
+    template:
+      src: /home/ansible/hardened.j2
+      dest: /etc/sudoers.d/hardened
+      validate: /sbin/visudo -cf %s
+```
+  
+##### Run the Playbook and Ensure the Files Are Correctly Deployed
+- `ansible-playbook /home/ansible/security.yml`
+  
+Check the local **/etc/sudoers.d/hardened** on the **ansible control** node for the correct contents.
