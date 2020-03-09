@@ -41,6 +41,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Ansible Facts Lecture](#ansible-facts-lecture)
     - [Demo: Working with Ansible Facts](#demo-working-with-ansible-facts)
     - [LAB: Working with Ansible Templates, Variables, and Facts](#lab-working-with-ansible-templates-variables-and-facts)  
+- [Create and Work with Roles](#create-and-work-with-roles)
+    - [Working with Ansible Roles Lecture](#working-with-ansible-roles-lecture)
+
 
 
 ## Understanding Core Components of Ansible
@@ -1218,3 +1221,45 @@ Summary tasks list:
 - `ansible-playbook /home/ansible/security.yml`
   
 Check the local **/etc/sudoers.d/hardened** on the **ansible control** node for the correct contents.
+  
+  
+## Create and Work with Roles
+### Working with Ansible Roles Lecture
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img23.png)
+  
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img24.png)
+
+- **Tasks** - the tasks directory contains the main list of tasks to be executed by the role.
+  - This directory must include a **main.yml** if that directroy is being used. You can think of main.yml as the entry point for the tasks section of the role. 
+
+- **Vars** - the vars directory contains variables used within the role
+  - The vars directory is entered via a main.yml
+  - The vars directory is one of three primary ways to interact with variables within a role (aside from convetional variable use such as inventory). The other two ways are using the defautls directory and passing parameters to the role
+  - The vars directory has the highest level of precedence. It will override inventory variables as well
+  - The vars directory may only be overridded by variablers passed via CLI. 
+
+- The **defaults** - directory that contains default variables for the role 
+  - The defaults directory is entered via a main.yml
+  - The default directory is one of three primary was to interact with vairables within a role (aside from conventional variables use such as inventory). The other two ways are using the directory ans passing parameters to the role.
+  - The defaults directory has the lowest level of precedence. 
+  - The defaults directory is only meant to provide a value to a variable if no other value is given.
+
+Best practice dictates that you properly namespace your variables when working with a role to avoid conflicts. 
+
+- The **handlers** directory contains handlers, which may be used by this role or even anywhere outside this role
+  - The directory is entered via a main.yml within the directory
+
+- More on **handlers**:
+  - Handlers are essentially tasks that my be flagged to run using the **notify** keyword
+  - The notify keyword will only flag the handler if a task block makes changes
+  - A handler will only be triggered once even if they are notified by multiple tasks
+
+- The **files** directory contains files which can be deployyed vis this role
+  - Files within this directory may be referenced without path throughout the role.
+  - Note this directory is for ordinary files (not var fies or templates)
+
+- The **templates** directory contains templates which can be deployed via this role
+  - Templates within this directory may be referenced without a path throughout the role. 
+
