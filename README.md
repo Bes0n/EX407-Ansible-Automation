@@ -43,7 +43,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [LAB: Working with Ansible Templates, Variables, and Facts](#lab-working-with-ansible-templates-variables-and-facts)  
 - [Create and Work with Roles](#create-and-work-with-roles)
     - [Working with Ansible Roles Lecture](#working-with-ansible-roles-lecture)
-
+    - [Demo: Creating and Applying a Role in Ansible](#demo-creating-and-applying-a-role-in-ansible)
 
 
 ## Understanding Core Components of Ansible
@@ -1262,4 +1262,105 @@ Best practice dictates that you properly namespace your variables when working w
 
 - The **templates** directory contains templates which can be deployed via this role
   - Templates within this directory may be referenced without a path throughout the role. 
+  
 
+### Demo: Creating and Applying a Role in Ansible
+In this terminal-side demonstration, a new role is created and then applied to a target host.
+  
+- `ansible-galaxy role init apache` - create an **apache** role with default structure by using *ansible-galaxy*
+```
+[cloud_user@innaghiyev2c ~]$ ll /etc/ansible/roles/apache/
+total 4
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar  9 08:27 defaults
+drwxrwxr-x. 2 cloud_user cloud_user    6 Mar  9 08:27 files
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar  9 08:27 handlers
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar  9 08:27 meta
+-rw-rw-r--. 1 cloud_user cloud_user 1328 Mar  9 08:27 README.md
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar  9 08:27 tasks
+drwxrwxr-x. 2 cloud_user cloud_user    6 Mar  9 08:27 templates
+drwxrwxr-x. 2 cloud_user cloud_user   37 Mar  9 08:27 tests
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar  9 08:27 vars
+```
+  
+- `vim /etc/ansible/roles/tasks/main.yml` - we're going to start from `tasks`
+```
+---
+# tasks file for apache
+- name: install apache
+  yum: name=httpd state=latest
+
+- name: copy httpd.conf template
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+  notify: restart httpd
+
+- name: enable and start service
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+```
+  
+- `ls -l /etc/ansible/roles/apache/templates` - our templates for apache role stored in **templates** directory, no need to define full path for it
+```
+[cloud_user@innaghiyev2c templates]$ ls -l
+total 12
+-rw-r--r--. 1 root root 11765 Mar  9 08:47 httpd.conf.j2
+```
+  
+- `vim /etc/ansible/roles/apache/defaults/main.yml` - we're going to setup default attributes.
+```
+---
+# defaults file for apache
+apache_server_admin: admin@example.com
+```
+  
+- `/etc/ansible/roles/apache/handlers/main.yml` - configuring handler 
+```
+---
+# handlers file for apache
+
+- name: restart apache service
+  service: name=httpd state=restarted
+  listen: "restart httpd"
+```
+  
+- `/etc/ansible/roles/install.yml` - configure playbook to use **apache** role
+```
+---
+- hosts: labservers
+  become: yes
+  roles:
+    - apache
+```
+
+- `ansible-playbook install.yml` - finally run your playbook and check for results.
+```
+PLAY RECAP **********************************************************************************************************************************************************
+innaghiyev1c.mylabserver.com : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+innaghiyev2c.mylabserver.com : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+innaghiyev3c.mylabserver.com : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
+- `vim /etc/ansible/roles/install.yml` - let's change our default variable for **apache_server_admin**
+```
+---
+- hosts: labservers
+  become: yes
+  roles:
+    - apache
+  vars:
+    apache_server_admin: beson@example.com
+```
+
+- `vim -R /etc/httpd/conf/httpd.conf` - as we can see new **ServerAdmin** value has been updated
+```
+# ServerAdmin: Your address, where problems with the server should be
+# e-mailed.  This address appears on some server-generated pages, such
+# as error documents.  e.g. admin@your-domain.com
+#
+ServerAdmin beson@example.com
+```
+  
+  
