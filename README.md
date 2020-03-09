@@ -44,7 +44,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Create and Work with Roles](#create-and-work-with-roles)
     - [Working with Ansible Roles Lecture](#working-with-ansible-roles-lecture)
     - [Demo: Creating and Applying a Role in Ansible](#demo-creating-and-applying-a-role-in-ansible)
-
+    - [Applying In-Line Roles and Role Dependencies](#applying-in-line-roles-and-role-dependencies)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -1363,4 +1363,101 @@ innaghiyev3c.mylabserver.com : ok=5    changed=2    unreachable=0    failed=0   
 ServerAdmin beson@example.com
 ```
   
+
+### Applying In-Line Roles and Role Dependencies
+Working with roles is further covered in a discussion on static vs dynamic roles followed by a lecture on how to create and work with role dependencies in Ansible. This lesson concludes with a demonstration of creating a new role that is dependent on another role.
   
+We can put some conditions and tags to involve a roles inside of playbook:
+```
+---
+- hosts: webservers
+  tasks:
+  - include_role:
+      name: apache
+    tags:
+    - RH_HTTPD
+    when "ansible_os_family == 'RedHat'"
+```
+  
+You can configure roles to use **dependencies**:
+```
+---
+dependencies:
+  - role: common
+    vars:
+      some_parameter: 3
+  - role: apache
+    vars:
+      apache_port: 80    
+```
+  
+- **Meta** directory:
+  - The meta-directory defines certain meta data for the role.
+  - Relevant meta data includes role dependecies and vairous role level configurations such as *allow_duplicates*.
+
+   The meta-directroy is entered via a *main.yml*
+
+- **Nesting**:
+  - Roles my include other roles using the dependecies keyword.
+  - Dependent roles are applied prior to the role dependent on them
+  - A role using the same parameters will not be applied more than one time. This can cause complication with role dependencies
+  - Having `allow_duplicates: true` defined in **meta/main.yml** within a role will allow the role to be applied more than once. 
+  
+  
+- `ansible-galaxy init php-webserver` - let's generate **php-webserver** role. That roles is going to use **apache** role as a dependency role.
+- `sudo vim /etc/ansible/roles/php-webserver/tasks/main.yml` - write tasks for a php-webserver role
+```
+---
+# tasks file for php-webserver
+
+- name: install php
+  yum: name= {{ item }} state=latest
+  with_items:
+    - php
+    - php-gd
+    - php-pear
+    - php-mysql
+  notify: restart httpd
+```
+
+- `sudo vim /etc/ansible/roles/php-webserver/meta/main.yml` - configure dependency from **meta** directory. We only need **dependencies** block here
+```
+dependencies:
+  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
+  # if you add dependencies to this list.
+  - role: apache
+```
+
+- `sudo vim /etc/ansible/roles/install.yml` - our cookbook will look like this
+```
+---
+- hosts: labservers
+  become: yes
+  roles:
+    - php-webserver
+```
+  
+From output it can be seen that dependency **apache** role run **first** and then our **php-webserver** role.  
+```
+PLAY [labservers] ********************************************************************************************************************************************
+TASK [Gathering Facts] ********************************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com]
+
+TASK [apache : install apache] ********************************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com]
+
+TASK [apache : copy httpd.conf template] ***********************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com]
+
+TASK [apache : enable and start service] ***********************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com]
+
+TASK [php-webserver : install php] ***********************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com] => (item=php)
+ok: [innaghiyev2c.mylabserver.com] => (item=php-gd)
+ok: [innaghiyev2c.mylabserver.com] => (item=php-pear)
+ok: [innaghiyev2c.mylabserver.com] => (item=php-mysql)
+
+PLAY RECAP ************************************************************************************************************************
+innaghiyev2c.mylabserver.com : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
