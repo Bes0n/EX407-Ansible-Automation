@@ -46,6 +46,10 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Creating and Applying a Role in Ansible](#demo-creating-and-applying-a-role-in-ansible)
     - [Applying In-Line Roles and Role Dependencies](#applying-in-line-roles-and-role-dependencies)
     - [LAB: Working with Ansible Roles](#lab-working-with-ansible-roles)
+- [Download roles from an Ansible Galaxy](#download-roles-from-an-ansible-galaxy)
+    - [Download Roles from Ansible Galaxy](#download-roles-from-ansible-galaxy)  
+- [Managing Parallelism](#managing-parallelism)
+    - [Parallelism in Ansible](#parallelism-in-ansible)
   
   
 ## Understanding Core Components of Ansible
@@ -1590,3 +1594,77 @@ Edit `/home/ansible/resources/web.yml` to the following:
   
 ##### Run Your Playbook Using the Default Inventory
 Run ansible-playbook `/home/ansible/resources/web.yml`.
+  
+  
+## Download roles from an Ansible Galaxy
+### Download Roles from Ansible Galaxy
+Ansible Galaxy - galaxy.ansible.com or github.com:
+  - Essentially a large public repository of Ansible roles. 
+  - Role ship with readmes detailining role use and available variables.
+  - Galaxy contains a large number of roles that are constantly evolving and increasing.
+  - Galaxy can use git allowing for other role sources such as GitHub
+  
+- Ansible ships with the ansible-galaxy command which may be used to install roles form Galaxy among other useful role management features.
+- `ansible-galaxy` can also create new empty roles in your working directory like so:
+  - `ansible-galaxy init <role_name>`
+- Using `ansible-galaxy install <username.role>`, you can download roels from **galaxy.ansible.com**
+- Roles installed in the roles_path may be listed using `ansible-galaxy list`
+- Remove, search, and loging are other useful subcommands. 
+- The **-p** flag allows specification of local role location (`ansible-galaxy` uses `/etc/ansible/roles` by default)
+  
+- `ansible-galaxy init mysql` - initiate mysql named role with required structure inside
+```
+[cloud_user@innaghiyev2c ~]$ ansible-galaxy init mysql
+- Role mysql was created successfully
+[cloud_user@innaghiyev2c ~]$ ll mysql/
+total 4
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar 10 09:29 defaults
+drwxrwxr-x. 2 cloud_user cloud_user    6 Mar 10 09:29 files
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar 10 09:29 handlers
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar 10 09:29 meta
+-rw-rw-r--. 1 cloud_user cloud_user 1328 Mar 10 09:29 README.md
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar 10 09:29 tasks
+drwxrwxr-x. 2 cloud_user cloud_user    6 Mar 10 09:29 templates
+drwxrwxr-x. 2 cloud_user cloud_user   37 Mar 10 09:29 tests
+drwxrwxr-x. 2 cloud_user cloud_user   21 Mar 10 09:29 vars
+```
+
+- `ansible-galaxy search elasticsearch` - search for an **elasticsearch** role on ansible-galaxy
+```
+Found 487 roles matching your search:
+
+ Name                                                  Description
+ ----                                                  -----------
+ 0x0i.elasticsearch                                    Elasticsearch, a real-time distributed search and analytics engine
+ 0x0i.grafana                                          Grafana - an analytics and monitoring observability platform
+ 0x0i.kibana                                           Kibana, an analytics and visualization platform designed to operate with Elasticsearch
+ 1it.sudo                                              Ansible role for managing sudoers
+ aaronpederson.fluentd                                 Really simple management of data collection from logs or scripts. Installation from gem.
+ abelboldu.elasticsearch                               Elasticsearch for Linux.
+ abelboldu.logstash                                    Logstash for Linux.
+ abraverm.kibana-management                            Kibana objects (dashboard, visualization) management
+ adamaod.Single-Instance-ELK                           Single Instance Elk Stack
+ AerisCloud.collectd                                   This role takes care of adding collectd to any given server
+ AerisCloud.elasticsearch                              Installs ElasticSearch
+ AerisCloud.librato                                    Install and configure the Librato Agent
+ AerisCloud.logstash                                   This role is used to add log aggregation and forwarding capability to a given server
+ AerisCloud.repos                                      Manage CentOS yum and Debian apt repositories
+```
+
+- `ansible-galaxy install elastic.elasticsearch` - install elasticsearch role from ansible-galaxy
+
+- let's create simple playbook which will install role for us:
+```
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: install role
+      command: ansible-galaxy install elastic.elasticsearch
+```
+
+- `sudo ansible-galaxy remove elastic.elasticsearch` - remove installed role
+  
+
+## Managing Parallelism
+### Parallelism in Ansible
