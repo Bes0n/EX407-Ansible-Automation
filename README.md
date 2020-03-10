@@ -50,8 +50,11 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Download Roles from Ansible Galaxy](#download-roles-from-ansible-galaxy)  
 - [Managing Parallelism](#managing-parallelism)
     - [Parallelism in Ansible](#parallelism-in-ansible)
-  
-  
+- [Use Ansible Vault in Playbooks to Protect Sensitive Data](#use-ansible-vault-in-playbooks-to-protect-sensitive-data)
+    - [The Ansible-Vault Command](#the-ansible-vault-command)
+
+
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -1727,3 +1730,59 @@ innaghiyev3c.mylabserver.com : ok=2    changed=1    unreachable=0    failed=0   
 ```
 
 - `max_fail_percentage: 30` - we can use this key to provide percentage of failure during cookbook run. If 1/3 of our cookbook run will fail, then whole playbook gonna stop and concidered as **failed**
+  
+  
+## Use Ansible Vault in Playbooks to Protect Sensitive Data
+### The Ansible-Vault Command
+- The `ansible-vault` command allows file encryption, and requires a password to unencrypt
+- Command: `ansible-vault encrypt <file>`
+- The ansible-vault rekey command will allow you to re-encrypt a file and reset the password.
+- To supply the vault password during play execution, you must use either of the `--ask-vault-password` or `--ask-vault-file` flags.
+- Ansible 2.4 introduces the `--vault-id` feature.
+- It is also possible to set `no_log` within a module to censor sensitive log output
+
+- `vault-id` feature
+  - going to replace `--ask-vault-password` or `--ask-vault-file` flags
+  - before you can only specify one password for whole vault
+  - `vault-id` provides a possibility to set several passwords for a single play. 
+  - `vault-id` will go through each password stored in `vault` for encypted file to find proper one.
+  - it's possible to set up `label` for `vault-id`
+  
+As a demonstration let's create simple text file:
+- `echo "Super secret word stored here" > secret.txt`
+- `ansible-vault encrypt secret.txt` - simply encrypt our file
+```
+[cloud_user@innaghiyev2c ~]$ ansible-vault encrypt secret.txt
+New Vault password: <your vault password here>
+Confirm New Vault password: <confirm your vault password here> 
+Encryption successful 
+```
+  
+- `[cloud_user@innaghiyev2c ~]$ cat secret.txt` - as an output we have this now
+```
+$ANSIBLE_VAULT;1.1;AES256
+38643439333433636239326461326234386361306331366666636534623065343237393662363538
+3635633736663639663162326166636561666639653930650a303762393030663230386438393361
+64336461643063383564306230313037363166623735386164363964323265366332626138663266
+3638643239626366660a613162316565303936396437393133336631346166636538336533653637
+31396364666430653163306164336535333562343464376438663361663436643765
+```
+
+- `ansible-vault edit secret.txt` - if you want to edit encrypted file
+- `ansible-vault decrypt secret.txt` - decrypt your file
+- `ansible-vault encrypt_string 'The answer is 42' -n meaning` - you can encrypt pieces of your playbook, rather all files
+- `ansible-vault encrypt_string 'The answer is 42' -n meaning --vault-id dev@prompt` - provide vault-id with a label `dev`
+```
+[cloud_user@innaghiyev2c ~]$ ansible-vault encrypt_string 'The answer is 42' -n meaning --vault-id dev@prompt
+New vault password (dev): 
+Confirm new vault password (dev): 
+meaning: !vault |
+          $ANSIBLE_VAULT;1.2;AES256;dev
+          36333866373732363065613065643062383936656461626235326238643162303863343465373166
+          6431633033383432396638383463636636666364386165370a326337653336613564623363633362
+          31666264646662633365333237366631343130316136353939386131396432393233383732356261
+          6133353264626234630a353233366234343564653737383637633565623364633466343565623435
+          37393137383861373631636135616265613166323361356266353836626265356135
+Encryption successful
+```
+
