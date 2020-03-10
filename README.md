@@ -1668,3 +1668,62 @@ Found 487 roles matching your search:
 
 ## Managing Parallelism
 ### Parallelism in Ansible
+This lecture covers how to configure Ansible for higher performance using Ansible Forks. There is also a demonstration on how to use the serial keyword to batch host operations.
+  
+- It's posssible to control the number of hosts acted upon at once time by Ansible
+- The Ansible process will create forks to execute actions in parallel.
+- By default, the process will only for 5 times
+- The number of forks can be set for a single command using **-f** flag with either the ansible or ansible-playbook commands.
+- The default may be changed in **ansible.cfg**
+- The serial keyword may also confine the number of simultaneous updates within a playbook
+  
+For number: 
+  - best practice recommends do not increase it more than 50
+  - 5 is pretty small number 
+  - you can increase your fork number up to 10 or 15 without risk
+
+- `serial` - used to speficy on how many hosts playbook will be executed simultaneously
+```
+---
+- hosts: labservers
+  become: yes
+  serial:
+    - 1   #run on one hosts
+    - 2   #run on two hosts
+    - 50% #run on 50% of hosts
+  tasks:
+  - name: add host entry
+    lineinfile:
+      path: /etc/hosts
+      line: "webserver mywebserver.labs.com"
+```
+  
+- From run it can be seen that playbook first run on **one** host, then **two** and finally the rest
+```
+[cloud_user@innaghiyev2c ~]$ ansible-playbook serial.yml 
+
+PLAY [labservers] **********************************************************************************************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************************************************************************************
+ok: [innaghiyev1c.mylabserver.com]
+
+TASK [add host entry] ******************************************************************************************************************************************************
+changed: [innaghiyev1c.mylabserver.com]
+
+PLAY [labservers] **********************************************************************************************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************************************************************************************
+ok: [innaghiyev2c.mylabserver.com]
+ok: [innaghiyev3c.mylabserver.com]
+
+TASK [add host entry] ******************************************************************************************************************************************************
+changed: [innaghiyev2c.mylabserver.com]
+changed: [innaghiyev3c.mylabserver.com]
+
+PLAY RECAP *****************************************************************************************************************************************************************
+innaghiyev1c.mylabserver.com : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+innaghiyev2c.mylabserver.com : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+innaghiyev3c.mylabserver.com : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
+
+- `max_fail_percentage: 30` - we can use this key to provide percentage of failure during cookbook run. If 1/3 of our cookbook run will fail, then whole playbook gonna stop and concidered as **failed**
