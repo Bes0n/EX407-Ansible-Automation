@@ -52,9 +52,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Parallelism in Ansible](#parallelism-in-ansible)
 - [Use Ansible Vault in Playbooks to Protect Sensitive Data](#use-ansible-vault-in-playbooks-to-protect-sensitive-data)
     - [The Ansible-Vault Command](#the-ansible-vault-command)
-
-
-
+    - [Using Vaults in Playbooks](#using-vaults-in-playbooks)
+  
+  
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -1784,5 +1784,74 @@ meaning: !vault |
           6133353264626234630a353233366234343564653737383637633565623364633466343565623435
           37393137383861373631636135616265613166323361356266353836626265356135
 Encryption successful
+```
+
+### Using Vaults in Playbooks
+- We have following a playbook for testing:
+```
+---
+- hosts: localhost
+  vars_files:
+    - /home/cloud_user/secure
+  tasks:
+  - name: Output message
+    shell: echo {{ message }} > /home/cloud_user/deployed.txt
+```
+  
+- let's create simple file with `password` word inside:
+```
+[cloud_user@innaghiyev2c ~]$ cat vault
+password
+```
+
+- `ansible-vault encrypt --vault-id prod@vault secure` - encrypt `secure` file by labeling it as a `prod` and using file `vault` we recently created
+```
+[cloud_user@innaghiyev2c ~]$ ansible-vault encrypt --vault-id prod@vault secure
+Encryption successful
+```
+
+- `secure` file looks like that now:
+```
+[cloud_user@innaghiyev2c ~]$ cat secure 
+$ANSIBLE_VAULT;1.2;AES256;prod
+64366564623135316434353863666465646330626435613865363839626565353738363861336134
+6234353734313535623764393439666463613831356434310a336365663839393465333535313061
+64303464336666343739373736653162333866663733393930646366643031326239616538316665
+3963616365336631610a623566666265306432316435303032383435336165613432343761353165
+66336333366632353166643638663865366231356430333034663135343266633636
+```
+
+- Let's try to run our `vault.yml` playbook
+```
+[cloud_user@innaghiyev2c ~]$ ansible-playbook vault.yml 
+ERROR! Attempting to decrypt but no vault secrets found
+```
+
+- Same command, but with `vault-id` providing.
+```
+[cloud_user@innaghiyev2c ~]$ ansible-playbook vault.yml --vault-id prod@vault
+```
+
+- If we run playbook with `-v` - verbose key. We will see content of the encrypted file
+```
+changed: [localhost] => {"changed": true, "cmd": "echo I am a walrus"
+```
+
+- That can be prevented by using simple `no_log: True` string. 
+```
+---
+- hosts: localhost
+  vars_files:
+    - /home/cloud_user/secure
+  tasks:
+  - name: Output message
+    shell: echo {{ message }} > /home/cloud_user/deployed.txt
+    no_log: true
+```
+
+- Now output of the playbook will look like that:
+```
+TASK [Output message] **********************************************************************************
+changed: [localhost] => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result", "changed": true}
 ```
 
