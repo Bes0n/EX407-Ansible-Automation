@@ -53,7 +53,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Use Ansible Vault in Playbooks to Protect Sensitive Data](#use-ansible-vault-in-playbooks-to-protect-sensitive-data)
     - [The Ansible-Vault Command](#the-ansible-vault-command)
     - [Using Vaults in Playbooks](#using-vaults-in-playbooks)
-  
+- [LAB: Working with Confidential Data in Ansible](#lab-working-with-confidential-data-in-ansible)  
   
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -1854,4 +1854,33 @@ changed: [localhost] => {"changed": true, "cmd": "echo I am a walrus"
 TASK [Output message] **********************************************************************************
 changed: [localhost] => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result", "changed": true}
 ```
+  
 
+### LAB: Working with Confidential Data in Ansible
+#### Additional Information and Resources
+In an effort to improve security, you have been tasked with securing an Ansible variable file. The variable file is to be used in an ansible job that creates a secure website. To do this, complete the following:
+  
+1. Encrypt the file **/home/ansible/secret using ansible-vault**.
+2. Then configure a vault password file named **/home/ansible/vault** to be used to run the Ansible playbook **/home/ansible/secPage.yml** successfully with the encrypted secrets file.
+3. Verify your work by running the **secPage.yml** playbook using **ansible-playbook** and specifying your vault password file.
+4. Test that the site deployed correctly by trying to access http://node1/secure/classified.html using the user **bond** with the password **james**.
+  
+Summary tasks list:
+- Encrypt **/home/ansible/secret** using the `ansible-vault` command.
+- Create **/home/ansible/vault** as a vault password file that may be used to access the encrypted secret file without prompt.
+- Run the playbook **/home/ansible/secPage.yml** using your vault password file to validate your work.
+- Verify that the secure page deployed correctly by attempting to access http://node1/secure/classified.html as the user **bond** with the password **james**.
+
+#### Learning Objectives
+##### Encrypt `/home/ansible/secret` using the `ansible-vault` command.
+- Run `ansible-vault encrypt /home/ansible/secret` and provide a simple password of your choosing.
+- Be sure to remember the password!
+##### Create */home/ansible/vault* as a vault password file that may be used to access the encrypted secret file without prompt.
+- Run the command `echo "<Your_Vault_Password>" > /home/ansible/vault`.
+- Substitute <<Your_Vault_Password>Your_Vault_Password> with the password you chose in the previous task.
+##### Run the playbook */home/ansible/secPage.yml* using your *vault* password file to validate your work.
+- Run the command `ansible-playbook --vault-password-file /home/ansible/vault /home/ansible/secPage.yml`.
+- If your encryption was configured correctly, you should get no errors.
+##### Verify that the secure page deployed correctly by attempting to access http://node1/secure/classified.html as the user *bond* with the password *james*.
+- Run `curl -u bond http://node1/secure/classified.html` and supply the password **james** when prompted.
+- The command should return the contents of **classified.html** regarding the weather in a certain city.
