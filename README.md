@@ -58,6 +58,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Introduction to Ansible Tower](#introduction-to-ansible-tower)
     - [Installing Ansible Tower](#installing-ansible-tower)
     - [Demo: Working with Ansible Tower](#demo-working-with-ansible-tower)
+- [Use Documentation to Look Up Specific Information About Ansible Modules and Commands](#use-documentation-to-look-up-specific-information-about-ansible-modules-and-commands)
+    - [Finding Documentation](#finding-documentation)
 
 
 ## Understanding Core Components of Ansible
@@ -1905,7 +1907,7 @@ Steps to install ansible Tower:
 - Get a free license (maximum 10 hosts)
 - Read manual in **README.md** in your main directory that you just unarchived
 ```
-nsible Tower Deployment
+Ansible Tower Deployment
 ========================
 
 This collection of files provides a complete set of playbooks for deploying
@@ -2007,3 +2009,151 @@ rabbitmq_cookie=cookiemonster
 - **Jobs** - you can see the status of your jobs from this tab
 
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img27.png)
+
+
+## Use Documentation to Look Up Specific Information About Ansible Modules and Commands
+### Finding Documentation
+Two main ways to find documentation:
+- built-in ansible commands
+- http://docs.ansible.com/
+
+- `ansible-doc` - by using this command we can search for any ansible module documentation
+  - `ansible-doc lineinfile` - get help about `lineinfile` module
+```
+> LINEINFILE    (/usr/lib/python2.7/site-packages/ansible/modules/files/lineinfile.py)
+
+        This module ensures a particular line is in a file, or replace an existing line using a back-referenced regular expression. This is primarily useful when you
+        want to change a single line in a file only. See the [replace] module if you want to change multiple, similar lines or check [blockinfile] if you want to
+        insert/update/remove a block of lines in a file. For other cases, see the [copy] or [template] modules.
+
+  * This module is maintained by The Ansible Core Team
+OPTIONS (= is mandatory):
+
+- attributes
+        The attributes the resulting file or directory should have.
+        To get supported flags look at the man page for `chattr' on the target system.
+        This string should contain the attributes in the same order as the one displayed by `lsattr'.
+        The `=' operator is assumed as default, otherwise `+' or `-' operators need to be included in the string.
+        (Aliases: attr)[Default: (null)]
+        type: str
+        version_added: 2.3
+
+- backrefs
+        Used with `state=present'.
+        If set, `line' can contain backreferences (both positional and named) that will get populated if the `regexp' matches.
+        This parameter changes the operation of the module slightly; `insertbefore' and `insertafter' will be ignored, and if the `regexp' does not match anywhere in
+        the file, the file will be left unchanged.
+        If the `regexp' does match, the last matching line will be replaced by the expanded line parameter.
+        [Default: False]
+        type: bool
+        version_added: 1.1
+
+- backup
+        Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
+        [Default: False]
+        type: bool
+
+- create
+        Used with `state=present'.
+        If specified, the file will be created if it does not already exist.
+        By default it will fail if the file is missing.
+        [Default: False]
+        type: bool
+
+- firstmatch
+        Used with `insertafter' or `insertbefore'.
+        If set, `insertafter' and `insertbefore' will work with the first line that matches the given regular expression.
+        [Default: False]
+        type: bool
+        version_added: 2.5
+
+- group
+        Name of the group that should own the file/directory, as would be fed to `chown'.
+:
+```
+  
+- `ansible-doc replace` - another example with `replace` module
+```
+# Prior to Ansible 2.7.10, using before and after in combination did the opposite of what was intended.
+# see https://github.com/ansible/ansible/issues/31354 for details.
+- name: Replace between the expressions (requires Ansible >= 2.4)
+  replace:
+    path: /etc/hosts
+    after: '<VirtualHost [*]>'
+    before: '</VirtualHost>'
+    regexp: '^(.+)$'
+    replace: '# \1'
+
+- name: Supports common file attributes
+  replace:
+    path: /home/jdoe/.ssh/known_hosts
+    regexp: '^old\.host\.name[^\n]*\n'
+    owner: jdoe
+    group: jdoe
+    mode: '0644'
+
+- name: Supports a validate command
+  replace:
+    path: /etc/apache/ports
+    regexp: '^(NameVirtualHost|Listen)\s+80\s*$'
+    replace: '\1 127.0.0.1:8080'
+    validate: '/usr/sbin/apache2ctl -f %s -t'
+
+- name: Short form task (in ansible 2+) necessitates backslash-escaped sequences
+  replace: path=/etc/hosts regexp='\\b(localhost)(\\d*)\\b' replace='\\1\\2.localdomain\\2 \\1\\2'
+
+- name: Long form task does not
+  replace:
+    path: /etc/hosts
+    regexp: '\b(localhost)(\d*)\b'
+    replace: '\1\2.localdomain\2 \1\2'
+
+- name: Explicitly specifying positional matched groups in replacement
+  replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^(ListenAddress[ ]+)[^\n]+$'
+    replace: '\g<1>0.0.0.0'
+
+- name: Explicitly specifying named matched groups
+  replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^(?P<dctv>ListenAddress[ ]+)(?P<host>[^\n]+)$'
+    replace: '#\g<dctv>\g<host>\n\g<dctv>0.0.0.0'
+```
+
+- `ansible-doc -s htpasswd` - with **-s** key we will get more consolidated view. 
+```
+- name: manage user files for basic authentication
+  htpasswd:
+      attributes:            # The attributes the resulting file or directory should have. To get supported flags look at the man page for `chattr' on the target system. This string should contain the
+                               attributes in the same order as the one displayed by `lsattr'. The `=' operator is assumed as default, otherwise `+' or `-' operators need to be
+                               included in the string.
+      create:                # Used with `state=present'. If specified, the file will be created if it does not already exist. If set to "no", will fail if the file does not exist
+      crypt_scheme:          # Encryption scheme to be used.  As well as the four choices listed here, you can also use any other hash supported by passlib, such as md5_crypt and sha256_crypt, which are linux
+                               passwd hashes.  If you do so the password file will not be compatible with Apache or Nginx
+      group:                 # Name of the group that should own the file/directory, as would be fed to `chown'.
+      mode:                  # The permissions the resulting file or directory should have. For those used to `/usr/bin/chmod' remember that modes are actually octal numbers. You must either add a leading zero
+                               so that Ansible's YAML parser knows it is an octal number (like `0644' or `01777') or quote it (like `'644'' or `'1777'') so Ansible receives a
+                               string and can do its own conversion from string into number. Giving Ansible a number without following one of these rules will end up with a
+                               decimal number which will have unexpected results. As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, `u+rwx' or
+                               `u=rw,g=r,o=r'). As of Ansible 2.6, the mode may also be the special string `preserve'. When set to `preserve' the file will be given the same
+                               permissions as the source file.
+      name:                  # (required) User name to add or remove
+      owner:                 # Name of the user that should own the file/directory, as would be fed to `chown'.
+      password:              # Password associated with user. Must be specified if user does not exist yet.
+      path:                  # (required) Path to the file that contains the usernames and passwords
+      selevel:               # The level part of the SELinux file context. This is the MLS/MCS attribute, sometimes known as the `range'. When set to `_default', it will use the `level' portion of the policy if
+                               available.
+      serole:                # The role part of the SELinux file context. When set to `_default', it will use the `role' portion of the policy if available.
+      setype:                # The type part of the SELinux file context. When set to `_default', it will use the `type' portion of the policy if available.
+      seuser:                # The user part of the SELinux file context. By default it uses the `system' policy, where applicable. When set to `_default', it will use the `user' portion of the policy if
+                               available.
+      state:                 # Whether the user entry should be present or not
+      unsafe_writes:         # Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file. By default this module uses atomic operations to prevent data
+                               corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example
+                               is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner. This option
+                               allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe
+                               writes). IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption.
+```
+
+- Do not hesitate to use http://docs.ansible.com. Very similar to `ansible-doc` but nicer with all information about modules. In http view
