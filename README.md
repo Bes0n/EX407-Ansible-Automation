@@ -53,8 +53,13 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Use Ansible Vault in Playbooks to Protect Sensitive Data](#use-ansible-vault-in-playbooks-to-protect-sensitive-data)
     - [The Ansible-Vault Command](#the-ansible-vault-command)
     - [Using Vaults in Playbooks](#using-vaults-in-playbooks)
-- [LAB: Working with Confidential Data in Ansible](#lab-working-with-confidential-data-in-ansible)  
-  
+    - [LAB: Working with Confidential Data in Ansible](#lab-working-with-confidential-data-in-ansible)  
+- [Install Ansible Tower and Use it to Manage Systems](#install-ansible-tower-and-use-it-to-manage-systems)
+    - [Introduction to Ansible Tower](#introduction-to-ansible-tower)
+    - [Installing Ansible Tower](#installing-ansible-tower)
+    - [Demo: Working with Ansible Tower](#demo-working-with-ansible-tower)
+
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -1884,3 +1889,121 @@ Summary tasks list:
 ##### Verify that the secure page deployed correctly by attempting to access http://node1/secure/classified.html as the user *bond* with the password *james*.
 - Run `curl -u bond http://node1/secure/classified.html` and supply the password **james** when prompted.
 - The command should return the contents of **classified.html** regarding the weather in a certain city.
+  
+  
+## Install Ansible Tower and Use it to Manage Systems
+### Introduction to Ansible Tower
+- Ansible Tower provides a web server interface to ansible.
+- System requirements are somewhat heavy.
+- Tower is only free for minimal use. Working with more than a few systems requires a paid license
+- The two key benefitty of Ansible Tower are user permissioning and the audit trail (only provided with license)
+  
+### Installing Ansible Tower
+Steps to install ansible Tower:
+- Go to the following link https://docs.ansible.com/ansible-tower/latest/html/quickinstall/download_tower.html
+- Download an un-tar your archive
+- Get a free license (maximum 10 hosts)
+- Read manual in **README.md** in your main directory that you just unarchived
+```
+nsible Tower Deployment
+========================
+
+This collection of files provides a complete set of playbooks for deploying
+the Ansible Tower software to a single-server installation. It is also to
+install Tower to the local machine, or to a remote machine reachable by SSH.
+
+For quickly getting started with installation and setup instructions, refer to:
+
+- Ansible Tower Quick Installation Guide -- http://docs.ansible.com/ansible-tower/latest/html/quickinstall/index.html
+- Ansible Tower Quick Setup Guide -- http://docs.ansible.com/ansible-tower/latest/html/quickstart/index.html
+
+For more indepth documentation, refer to:
+
+- Ansible Tower Installation and Reference Guide -- http://docs.ansible.com/ansible-tower/latest/html/installandreference/index.html
+- Ansible Tower User Guide -- http://docs.ansible.com/ansible-tower/latest/html/userguide/index.html 
+- Ansible Tower Administration Guide -- http://docs.ansible.com/ansible-tower/latest/html/administration/index.html
+- Ansible Tower API Guide -- http://docs.ansible.com/ansible-tower/latest/html/towerapi/index.html
+
+To install or upgrade, start by editing the inventory file in this directory. 
+Uncomment and change the password from 'password' for the 3 variables below.
+* admin_password
+* pg_password
+* rabbitmq_password
+
+Tower can be installed in 3 different modes:
+1. On a single machine. This is the default, and will install in this mode with
+   no modifications to the inventory file.
+2. On a single machine with a remote PostgreSQL database. Supplying the pg_host
+   and pg_port variables will trigger this mode of installation.
+3. Cluster/High Availability, multiple machines with a remote PostgreSQL database.
+   Adding multiple hosts to the [tower] inventory group will trigger this mode of
+   installation. Note that pg_host and pg_port are also required.
+
+```
+  
+- Next one is ansible tower **inventory** file:
+```
+[tower]
+localhost ansible_connection=local
+
+[database]
+
+[all:vars]
+admin_password=''
+
+pg_host=''
+pg_port=''
+
+pg_database='awx'
+pg_username='awx'
+pg_password=''
+pg_sslmode='prefer'  # set to 'verify-full' for client-side enforced SSL
+
+rabbitmq_username=tower
+rabbitmq_password=''
+rabbitmq_cookie=cookiemonster
+
+# Isolated Tower nodes automatically generate an RSA key for authentication;
+# To disable this behavior, set this value to false
+# isolated_key_generation=true
+
+
+# SSL-related variables
+
+# If set, this will install a custom CA certificate to the system trust store.
+# custom_ca_cert=/path/to/ca.crt
+
+# Certificate and key to install in nginx for the web UI and API
+# web_server_ssl_cert=/path/to/tower.cert
+# web_server_ssl_key=/path/to/tower.key
+
+# Use SSL for RabbitMQ inter-node communication.  Because RabbitMQ never
+# communicates outside the cluster, a private CA and certificates will be
+# created, and do not need to be supplied.
+# rabbitmq_use_ssl=False
+
+# Server-side SSL settings for PostgreSQL (when we are installing it).
+# postgres_use_ssl=False
+# postgres_ssl_cert=/path/to/pgsql.crt
+# postgres_ssl_key=/path/to/pgsql.key
+
+```
+
+- some of the basic configuration stored in `/etc/tower/settings.py`
+  
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img25.png)
+     
+
+### Demo: Working with Ansible Tower
+- You can create a new project and select SCM type (Manual, Git, Mercirial etc)
+- **Inventories** - in this tab we can manage our invetory files, editing and adding new hosts inside of inventory files. 
+  - groups can be added inside of inventories tab
+  - ad-hoc commands can be executed from hosts tab
+- **Credential** - from this tab you can manage your users, access type, import your private key, prompt for password/passphrase and so on
+- **Execute ad-hoc command** 
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img26.png)
+  
+- **Templates** - the same as in ansible playbook 
+- **Jobs** - you can see the status of your jobs from this tab
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img27.png)
