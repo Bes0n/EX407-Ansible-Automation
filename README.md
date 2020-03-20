@@ -60,7 +60,9 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Demo: Working with Ansible Tower](#demo-working-with-ansible-tower)
 - [Use Documentation to Look Up Specific Information About Ansible Modules and Commands](#use-documentation-to-look-up-specific-information-about-ansible-modules-and-commands)
     - [Finding Documentation](#finding-documentation)
-
+- [Ansible 2.7 Exam Update](#ansible-2.7-exam-update)
+    - [Install and Configure Control Node and Ansible Nodes](#install-and-configure-control-node-and-ansible-nodes)
+    - [Shell Scripts to Run Ad-Hoc Commands](#shell-scripts-to-run-ad-hoc-commands)
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -2157,3 +2159,38 @@ OPTIONS (= is mandatory):
 ```
 
 - Do not hesitate to use http://docs.ansible.com. Very similar to `ansible-doc` but nicer with all information about modules. In http view
+  
+  
+## Ansible 2.7 Exam Update
+### Install and Configure Control Node and Ansible Nodes
+The new exam now mentions, as an objective, needing to know how to install and configure an Ansible control node:
+  
+This lesson will help you to learn how to:
+- Install required packages
+- Create a static host inventory file
+- Configure Ansible managed nodes
+- Configure privilege escalation on managed nodes
+- Validate a working configuration using ad-hoc Ansible commands
+
+Following commands have been used during this process:
+- `sudo yum install ansible` - install ansible
+- `sudo useradd ansible` and `sudo passwd ansible` - setup **ansible** user
+- `sudo visudo` - configure ansible user to run without password prompt 
+  - `ansible ALL=(ALL)       NOPASSWD: ALL` - add this line to **visudo**
+- `vim /etc/hosts` - add worker hosts to master node as a `client1` and `client2`
+- `vim /etc/ansible/hosts` - add `client1` and `client2` in your default inventory file
+- `ssh-keygen` - generate ssh key on your **master** node, with **ansible** user. 
+- `ssh-copy-id client1` - distribute ssh key to the worker nodes
+- `ansible all -m ping` - run ad-hoc command using `ping` module through all hosts
+- `ansible all -m ping -b` - run ad-hoc command in escalated mode (-b) using `ping` module through all hosts
+
+
+### Shell Scripts to Run Ad-Hoc Commands
+Why shell scripts? 
+- Shell scripts can be used to hide complexity
+- You can use shell scripts easily with Ansible ad-hoc commands
+- People not experienced in Ansible can leverage them
+- People not skilled in Ansible can create and use them
+- There is no need to know yam and .yml formatiing
+
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img28 .png)
