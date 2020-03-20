@@ -2193,4 +2193,4 @@ Why shell scripts?
 - People not skilled in Ansible can create and use them
 - There is no need to know yam and .yml formatiing
 
-![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img28 .png)
+![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img28.png)
