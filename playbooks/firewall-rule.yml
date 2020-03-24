@@ -1,0 +1,14 @@
+---
+- hosts: labservers 
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    - name: restart service firewalld
+      service:
+        name: firewalld
+        state: restarted

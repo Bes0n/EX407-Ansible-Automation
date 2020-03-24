@@ -63,6 +63,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
 - [Ansible 2.7 Exam Update](#ansible-2.7-exam-update)
     - [Install and Configure Control Node and Ansible Nodes](#install-and-configure-control-node-and-ansible-nodes)
     - [Shell Scripts to Run Ad-Hoc Commands](#shell-scripts-to-run-ad-hoc-commands)
+    - [Firewall Rules](#firewall-rules)
+
 
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -2194,3 +2196,66 @@ Why shell scripts?
 - There is no need to know yam and .yml formatiing
 
 ![img](https://github.com/Bes0n/EX407-Ansible-Automation/blob/master/images/img28.png)
+  
+
+### Firewall Rules
+Ansible and Firewall Rules
+- There are Ansible modules that can be used with firewalls
+- The **firewalld** module like othersm, can be used to add or remove rules. 
+- **firewalld** module - https://docs.ansible.com/ansible/latest/modules/firewalld_module.html
+- **iptables** module - https://docs.ansible.com/ansible/latest/modules/iptables_module.html
+  
+- Playbook for installation and enabling firewalld:
+```
+---
+- hosts: labservers
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install firewalld
+      action: yum name=firewalld state=installed
+    - name: enable firewalld on system boot
+      service: name=firewalld enabled=yes
+    - name: start service firewalld, if not started
+      service:
+        name: firewalld
+        state: started
+```
+
+- Second playbook will install **elinks** and **httpd** on your nodes
+```
+---
+- hosts: labservers
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install elinks
+      action: yum name=elinks state=installed
+    - name: install httpd
+      action: yum name=httpd state=installed
+    - name: enable and start apache on system reboot
+      service: name=httpd enabled=yes state=started
+```
+
+- `elinks http://localhost `- our apache server accessible from internal network 
+- `elinks http://client` - but it's not accessible from outside
+
+- Let's create playbook to change this firewall rule:
+```
+---
+- hosts: labservers 
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    - name: restart service firewalld
+      service:
+        name: firewalld
+        state: restarted
+```
