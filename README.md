@@ -64,8 +64,10 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Install and Configure Control Node and Ansible Nodes](#install-and-configure-control-node-and-ansible-nodes)
     - [Shell Scripts to Run Ad-Hoc Commands](#shell-scripts-to-run-ad-hoc-commands)
     - [Firewall Rules](#firewall-rules)
-
-
+    - [Archiving](#archiving)
+    - [Scheduled Tasks: Cron](#scheduled-tasks-cron)
+  
+  
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -2259,3 +2261,88 @@ Ansible and Firewall Rules
         name: firewalld
         state: restarted
 ```
+  
+### Archiving
+The Archive Module
+- There are Ansible modules that can be used for archive purposes. 
+- It is mentioned as a part of exam's objectives
+- Archive module documentation page: https://docs.ansible.com/ansible/latest/modules/archive_module.html
+- Assumes the compression source exists on the target
+- Does **not** copy source files from the local system to the target before archiving
+- You can delete source files after archiving by using the **remove=true** option. 
+  
+The Unarchive module
+- The opposite module is **unarchive**
+- unarchive module documentation page: https://docs.ansible.com/ansible/latest/modules/unarchive_module.html
+- if a **checksum** is required, the use **get_url** or **uri** instead
+- By default it will copy from the source file to the target before unpacking
+  
+- Let's create some backup-logs playbook. Which will archive directory for us and fetch it by hostnames. 
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Compress directory /var/log/ into /home/ansible/logs.zip
+    archive:
+      path: /var/log
+      dest: /home/ansible/logs.tar.gz
+      owner: ansible
+      group: ansible
+      format: gz
+  - name: Fetch the log files to the local filesystem
+    fetch:
+      src: /home/ansible/logs.tar.gz
+      dest: logbackup-{{ inventory_hostname }}.tar.gz
+      flat: yes
+```
+  
+  
+### Scheduled Tasks: Cron
+The Cron Module
+- The **cron** module is used to manage **crontab** on your nodes. 
+- You can create environmnet variables as well as named **crontab** entries
+- You should add a **name** with the **crontrab** entry so it can be removed easily with a playbook
+    - `e.g. name: "Job 0001"`
+- When managing environment variables, no comment line gets added; however, the module uses the **name** parameter to find the correct definition line. 
+  
+The Cron Module - Extra Parameters
+- You remove the **crontab** entry by using `state: absent` in a playbook. 
+- The `name:`  gets matched for a removal
+- You can use the boolean **disabled** to comment out an entry (only works if `state=present`)
+- Jobs can be set to run at reboot if required. Use the `special_time: reboot` if that is required. 
+- You can add a specific user if you need to set a **crontab** entry for a user (need to become **root**)
+- Use `insertafter` or `insertbefore` to add env entry before or after another **env** entry
+  
+- Let's create some cron playbook, which will run command to check space at 5am and 5pm
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Ensure a job that runs at 5am and 5pm exists.
+    cron:
+      name: "Job 0001"
+      minute: "0"
+      hour: "5,17"
+      job: "df -h >> /tmp/diskspace"
+  
+  - name: Creates an entry like "PATH=/opt/bin/" on top of crontab
+    cron:
+      name: PATH
+      env: yes
+      job: /opt/bin
+  
+  - name: Create an entry like "APP_HOME=/srv/app" and insert it after PATH declaration
+    cron: 
+      name: APP_HOME
+      env: yes
+      job: /srv/app
+      insertbefore: PATH
+```
+  
+- `state: absent` - to remove all created crontab entries. 
