@@ -10,3 +10,16 @@
       minute: "0"
       hour: "5,17"
       job: "df -h >> /tmp/diskspace"
+  
+  - name: Creates an entry like "PATH=/opt/bin/" on top of crontab
+    cron:
+      name: PATH
+      env: yes
+      job: /opt/bin
+  
+  - name: Create an entry like "APP_HOME=/srv/app" and insert it after PATH declaration
+    cron: 
+      name: APP_HOME
+      env: yes
+      job: /srv/app
+      insertbefore: PATH
