@@ -1,0 +1,14 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install the at command for job scheduling
+      action: yum name=at state=installed
+      
+    - name: enable and start service at if not started
+      service:
+        name: atd
+        state: started
+        enabled: yes

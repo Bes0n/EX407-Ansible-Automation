@@ -66,7 +66,7 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Firewall Rules](#firewall-rules)
     - [Archiving](#archiving)
     - [Scheduled Tasks: Cron](#scheduled-tasks-cron)
-  
+    - [Scheduled Tasks: `at`](#scheduled-tasks-at)
   
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
@@ -2346,3 +2346,56 @@ The Cron Module - Extra Parameters
 ```
   
 - `state: absent` - to remove all created crontab entries. 
+  
+
+### Scheduled Tasks: `at`
+**at** software
+- The **at** command is used to schedule jobs that will be running once in the future.
+- It is used for single ad-hoc jobs and is not meant as a replacement for **cron**
+- It is part of a group of commands that get installed with the **at** software
+- The other commands are:
+  - `at` - executes commands at a specific time. 
+  - `atq` - lists the users pending jobs
+  - `atrm` - deletes a job by its job number
+  - `batch` - executes the command depending depending on specific system load levels. A value must be specified. 
+  - only `at` and `atrm` are controlled via the `at` module
+  
+**at** software - Service Details
+- It may not be on all systems, so verify its installation 
+- On Red Hat or CentOS systems it is installed with a `yum install at` command
+- The service is controlled via the `atd` daemon
+
+- Cookbook for installing and enabling `at`
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install the at command for job scheduling
+      action: yum name=at state=installed
+      
+    - name: enable and start service at if not started
+      service:
+        name: atd
+        state: started
+        enabled: yes
+```
+  
+- Scheduling a task with `at` module
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: schedule a command to execute in 20 minutes as the ansible user
+      at:
+        command: df -h >> tmp/diskspace
+        count: 20
+        units: minutes
+```
+
+- `state: absent` - to remove scheduled task 
