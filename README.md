@@ -67,7 +67,8 @@ Red Hat Certified Specialist in Ansible Automation (EX407) Preparation Course
     - [Archiving](#archiving)
     - [Scheduled Tasks: Cron](#scheduled-tasks-cron)
     - [Scheduled Tasks: `at`](#scheduled-tasks-at)
-  
+    - [Security](#security)
+
 ## Understanding Core Components of Ansible
 ### Understanding Core Components of Ansible Part 1
 This series of lessons lays the foundation for the remainder of the course content. Through a combination of lecture and command line demonstration, Students will gain a broad overview of Ansible. This particular lesson, focuses on Ansible inventories.
@@ -2399,3 +2400,91 @@ The Cron Module - Extra Parameters
 ```
 
 - `state: absent` - to remove scheduled task 
+ 
+
+### Security
+Ansible Security Tasks
+- Ansible is very useful as a security tool
+- You can make security changes to many nodes at once
+- You can apply changes to help with easily securing nodes
+- You can check lots of nodes for vulnerabilities quickly 
+- It can work well with other tools that you may have in place
+- Check for Ansible modules that can be used for security tasks
+- Not just for Linux - can be used for OS X, Solaris, Windows, and others
+- Can be used for devices such as NetApp or EMC storagfe, F5 and others
+  
+Some Ansible Modules for Security
+- **selinux** - Configures the SELinux mode and policy
+- **firewalld** and **iptables**- Both manage firewall policies
+- **pamd** - Manages PAM modules
+  
+- Capable of working with **Datadog**, **Nagios** and other monitoring tools.
+- Manage users and groups (bulk add and delete users if you don't have SSO ability)
+- Can manage certificates such as OpenSSL or SSH
+  
+Let's us consider some examples. 
+- `ansible all -a /usr/bin/uptime` - check uptime of our nodes
+- We're going to create a playbook to check SELinux status
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Enable SELinux
+      selinux:
+        policy: targeted
+        state: enforcing
+```
+  
+- Let's add some user that expires and is a member of a group
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Ensure group "developers" exists
+      group:
+        name: developers
+        state: present
+```
+
+- `sudo useradd tempuser` - create a user
+- `sudo passwd tempuser` - set a password for a user
+- `sudo grep tempuser /etc/shadow` - get password hash
+```
+tempuser:$6$U/WVBoCW$UX62EjlZLVucylus7N8NZ4/WV2o6kDFIMwaPAjNukwnVxYrF3tZhOCnJwnIXwxseRVrxybneDrYJuTXQ0hpAS0:18349:0:99999:7:::
+```
+- go to https://www.epochconverter.com/ to get epoch timestamp. Set your expire date there
+- our cookbook will look like that
+```
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Add a consultant whose account you want to expire
+      user:
+        name: james20
+        shell: /bin/bash
+        groups: developers
+        append: yes
+        expires: 1585402826 #epoch time here
+        password: $6$U/WVBoCW$UX62EjlZLVucylus7N8NZ4/WV2o6kDFIMwaPAjNukwnVxYrF3tZhOCnJwnIXwxseRVrxybneDrYJuTXQ0hpAS0
+        # we added password hash above
+```
+- `tail /etc/passwd` - we can see that **james20** user has been created
+- `chage -l james20` - to see when account expires
+```
+Last password change                                    : Mar 28, 2020
+Password expires                                        : never
+Password inactive                                       : never
+Account expires                                         : Apr 28, 2020
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 99999
+Number of days of warning before password expires       : 7
+```
